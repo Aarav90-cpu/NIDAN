@@ -26,7 +26,7 @@ jobs:
         working-directory: NIDAN/OS
         run: |
           chmod +x ./build
-          sudo ./build
+          ./build
 
       - name: Locate custom ISO file
         id: locate_iso
