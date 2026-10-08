@@ -24,22 +24,22 @@ jobs:
 
       - name: Build NIDAN Engine and Compile ISO
         run: |
-          # Navigate to the correct directory structure
           cd OS/
-          
           export DOCKER_BUILDKIT=1
           
           echo "Step 1: Building/Verifying the NIDAN Build Engine..."
           docker build -t nidan-builder .
           
-          echo "Step 2: Checking configuration engine layout..."
-          if [ ! -d "config" ]; then
-              echo "Initializing fresh live-build layout..."
-              docker run --privileged --rm -v "$(pwd)":/workspace nidan-builder lb config
-          fi
+          echo "Step 2: Purging old runtime artifacts..."
+          # Always purge stale metadata BEFORE running configuration setup
+          docker run --privileged --rm -v "$(pwd)":/workspace nidan-builder lb clean --purge
           
-          echo "Step 3: Compiling your NIDAN custom ISO..."
-          docker run --privileged --rm -v "$(pwd)":/workspace nidan-builder sh -c "lb clean --purge && lb build"
+          echo "Step 3: Initializing live-build layout..."
+          docker run --privileged --rm -v "$(pwd)":/workspace nidan-builder lb config
+          
+          echo "Step 4: Compiling your NIDAN custom ISO..."
+          # Run compilation now that configuration environment state is safe
+          docker run --privileged --rm -v "$(pwd)":/workspace nidan-builder lb build
           
           echo "Success! Your custom NIDAN distribution ISO is ready."
 
