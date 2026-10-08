@@ -1,429 +1,276 @@
 # NIDAN Security Policy
 
-Security is a fundamental requirement of NIDAN.
-
-The project may eventually handle information associated with students, teachers, schools and educational activity. Security and privacy issues must therefore be treated seriously.
-
-This document describes how security issues should be reported and how contributors should approach security-sensitive changes.
+Security is fundamental. NIDAN may handle information associated with students, teachers, and schools. Security and privacy issues must be treated seriously.
 
 ---
 
-# 1. Reporting a Security Vulnerability
+## Reporting Security Vulnerabilities
 
-## Do not report security vulnerabilities through public GitHub issues.
+**Do NOT report security issues through public GitHub issues.**
 
-A public issue may expose a vulnerability before a fix is available.
+A public issue may expose the vulnerability before a fix is available.
 
-Security-sensitive reports should be submitted through the private security-reporting mechanism provided by the repository.
+Use GitHub Security Advisories (if available) for private reporting.
 
-If GitHub Security Advisories are enabled for this repository, use the repository's **Security Advisories** interface to submit the report.
-
-If no private reporting mechanism is currently available, do not publish sensitive technical details publicly. Contact the project maintainers through an official private communication channel associated with the project.
+If no private mechanism exists, contact maintainers through an official private channel and describe the issue without publishing sensitive details.
 
 ---
 
-# 2. What Should Be Reported Privately?
+## What to Report Privately
 
-Examples include:
+Security-sensitive issues include:
+- Authentication or authorization bypasses
+- Exposure of private student data
+- Access to another user's records
+- Credential or secret leaks
+- Remote code execution
+- Privilege escalation
+- SQL injection, command injection
+- Path traversal
+- Insecure synchronization
+- Serious denial-of-service vulnerabilities
+- Cryptographic failures
+- Vulnerabilities bypassing restrictions
+- Issues involving student communication or moderation
 
-* authentication bypasses,
-* authorization bypasses,
-* exposure of private student data,
-* access to another user's records,
-* credential leaks,
-* secret exposure,
-* remote code execution,
-* privilege escalation,
-* SQL injection,
-* command injection,
-* path traversal,
-* insecure synchronization,
-* insecure file handling,
-* serious denial-of-service vulnerabilities,
-* cryptographic implementation failures,
-* vulnerabilities that allow bypassing school/device restrictions,
-* security issues involving student communication or moderation.
-
-When uncertain whether an issue is security-sensitive, treat it as sensitive and report it privately.
+**When uncertain, report privately.**
 
 ---
 
-# 3. What to Include in a Report
+## Reporting Details
 
-A useful report should contain:
+Include:
+- **Summary:** Short description
+- **Component:** Affected part (e.g., NidanServer, NidanSync, NidanStudent)
+- **Version/Commit:** When known
+- **Reproduction:** Smallest sequence to reproduce
+- **Impact:** What an attacker could do
+- **Evidence:** Logs, screenshots, requests, stack traces (with synthetic data only)
 
-### Summary
-
-A short description of the vulnerability.
-
-### Affected component
-
-For example:
-
-```text
-NidanServer
-NidanSync
-NidanStudent
-NidanTeacher
-Nidan OS
-```
-
-### Affected version or commit
-
-Provide the version, release, branch or commit when known.
-
-### Reproduction steps
-
-Provide the smallest reliable sequence needed to reproduce the issue.
-
-### Impact
-
-Explain what an attacker could accomplish.
-
-### Evidence
-
-Include relevant:
-
-* logs,
-* screenshots,
-* requests,
-* responses,
-* stack traces,
-* proof-of-concept code,
-
-when safe to provide.
-
-Do not include real student information.
-
-Use synthetic accounts and synthetic data.
+Do NOT include real student information.
 
 ---
 
-# 4. Responsible Disclosure
+## Responsible Disclosure
 
-Please avoid publicly disclosing a vulnerability before the maintainers have had a reasonable opportunity to investigate and address it.
+Allow maintainers reasonable time to:
+1. Acknowledge the report
+2. Reproduce the issue
+3. Assess severity
+4. Develop a fix
+5. Test and publish an advisory
 
-The maintainers may:
-
-1. acknowledge the report,
-2. reproduce the issue,
-3. assess its severity,
-4. develop a fix,
-5. test the fix,
-6. publish an advisory when appropriate.
-
-The exact timeline may vary depending on severity and complexity.
+Timeline varies by severity and complexity.
 
 ---
 
-# 5. Security Philosophy
+## Security Philosophy
 
-NIDAN follows several security principles.
-
-## Least privilege
-
-A component should have only the permissions it requires.
-
-## Data minimization
-
-Do not collect information that is not needed.
-
-## Defense in depth
-
-Do not rely on one security control.
-
-## Secure defaults
-
-Unsafe behavior should not be the default configuration.
-
-## Explicit authorization
-
-Authentication alone does not imply permission to access resources.
-
-## Fail safely
-
-Failure should not silently disable security controls.
+- **Least privilege:** Components have only required permissions
+- **Data minimization:** Do not collect unnecessary information
+- **Defense in depth:** Do not rely on one control
+- **Secure defaults:** Unsafe behavior is not default
+- **Explicit authorization:** Authentication does not imply permission
+- **Fail safely:** Failures do not silently disable controls
 
 ---
 
-# 6. Student Data
+## Student Data Protection
 
-Student-related information must be treated carefully.
-
-Development and testing should use synthetic data whenever possible.
+Development and testing must use synthetic data.
 
 Never commit:
+- Real student names or contact information
+- Passwords or authentication tokens
+- Personal educational records
+- Private communication
 
-* real student names,
-* addresses,
-* phone numbers,
-* passwords,
-* authentication tokens,
-* personal educational records,
-* private communication,
-* government identifiers.
-
-Logs should not unnecessarily contain student-sensitive information.
+Logs must not unnecessarily contain student-sensitive information.
 
 ---
 
-# 7. Authentication and Authorization
+## Authentication & Authorization
 
-The system must distinguish between:
+Distinguish:
 
-```text
-Authentication
-"Who are you?"
+```
+Authentication: "Who are you?"
+Authorization: "What are you allowed to access?"
 ```
 
-and:
+A valid student session must NOT grant access to another student's data.
 
-```text
-Authorization
-"What are you allowed to access?"
-```
-
-Examples of potential roles include:
-
-* student,
-* teacher,
-* school administrator,
-* system administrator.
-
-A valid student session must not automatically grant access to another student's data.
-
-Authorization must be enforced at the appropriate application and backend boundaries.
+Enforce authorization at appropriate boundaries.
 
 ---
 
-# 8. Offline Security
+## Offline Security
 
-Offline operation creates security considerations of its own.
+Offline operation creates unique concerns:
+- Local data protection
+- Device theft scenarios
+- Unauthorized local access
+- Sync after prolonged disconnection
+- Stale credentials
+- Replayed or duplicate operations
+- Tampered local data
+- Recovery after reset
 
-Contributors working on offline functionality should consider:
-
-* local data protection,
-* device theft,
-* unauthorized local access,
-* synchronization after prolonged disconnection,
-* stale credentials,
-* replayed operations,
-* duplicate operations,
-* tampered local data,
-* recovery after device reset.
-
-Offline functionality must not become an excuse to bypass security controls.
+Offline functionality must NOT bypass security controls.
 
 ---
 
-# 9. Synchronization Security
+## Synchronization Security
 
-Synchronization should consider:
+Synchronization must consider:
+- Authenticated devices and users
+- Authorization
+- Request integrity
+- Duplicate and replay detection
+- Conflict handling
+- Server validation
 
-* authenticated devices,
-* authenticated users,
-* authorization,
-* request integrity,
-* duplicate requests,
-* replay protection where required,
-* conflict handling,
-* server validation,
-* malformed data,
-* unexpected state transitions.
-
-The server must never blindly trust data supplied by a client.
+**The server must never blindly trust client data.**
 
 ---
 
-# 10. Secrets
+## Secrets
 
-Never commit secrets to the repository.
-
-This includes:
-
-* API keys,
-* passwords,
-* private keys,
-* signing keys,
-* tokens,
-* database credentials,
-* service credentials.
+Never commit secrets:
+- API keys, passwords
+- Private signing keys
+- Database credentials
+- Service tokens
 
 Use appropriate environment or secret-management mechanisms.
 
-If a secret is accidentally committed:
+If a secret is committed:
+1. Treat it as compromised
+2. Rotate or revoke it
+3. Remove from active use
+4. Investigate exposure
+5. Fix the source
 
-1. Treat it as compromised.
-2. Rotate or revoke it.
-3. Remove it from active use.
-4. Investigate whether it was exposed elsewhere.
-5. Correct the source of the leak.
-
-Removing a secret from the latest commit is not sufficient if the secret has already been exposed.
-
----
-
-# 11. Dependencies
-
-Security-sensitive dependencies should be evaluated for:
-
-* maintenance,
-* known vulnerabilities,
-* compatibility,
-* license,
-* transitive dependencies.
-
-Do not introduce a library solely because it provides a convenient shortcut when the security implications are unclear.
+Removing from latest commit is insufficient if already exposed.
 
 ---
 
-# 12. Input Validation
+## Dependencies
 
-All externally controlled input should be treated as untrusted.
+Evaluate security-sensitive dependencies:
+- Maintenance status
+- Known vulnerabilities
+- Platform compatibility
+- License
+- Transitive dependencies
 
-Validate:
-
-* API requests,
-* synchronization payloads,
-* file paths,
-* uploaded content,
-* identifiers,
-* query parameters,
-* form data,
-* serialized objects.
-
-Validation should happen at trust boundaries.
-
-Client-side validation must not replace server-side validation.
+Do NOT add libraries when security implications are unclear.
 
 ---
 
-# 13. File and Content Security
+## Input Validation
 
-Educational content may eventually include:
+Treat all external input as untrusted:
+- API requests
+- Sync payloads
+- File paths
+- Uploaded content
+- Query parameters
+- Form data
 
-* PDFs,
-* images,
-* videos,
-* documents,
-* interactive activities.
-
-Content handling must consider:
-
-* path traversal,
-* malicious file names,
-* unexpected file types,
-* oversized files,
-* archive abuse,
-* executable content,
-* malicious documents.
-
-A file being labelled "educational" does not magically make it trustworthy.
+Validate at trust boundaries. Client-side validation does NOT replace server-side.
 
 ---
 
-# 14. Communication Features
+## File & Content Security
 
-Any future student communication system requires additional security and safety controls.
+Educational content (PDFs, images, videos, documents) must handle:
+- Path traversal
+- Malicious filenames
+- Unexpected file types
+- Oversized files
+- Archive abuse
+- Executable content
+- Malicious documents
 
-Potential requirements include:
-
-* authenticated identities,
-* authorization,
-* moderation,
-* abuse reporting,
-* blocking,
-* rate limiting,
-* message handling policies,
-* administrator controls,
-* privacy protections,
-* retention rules.
-
-Communication features should not be implemented casually.
+Being "educational" does not make content trustworthy.
 
 ---
 
-# 15. Security Testing
+## Communication Features
 
-Security-sensitive components should be tested for:
+Any student communication system requires:
+- Authenticated identities
+- Authorization
+- Moderation
+- Abuse reporting
+- Blocking and rate limiting
+- Message policies
+- Administrator controls
+- Privacy protections
+- Retention rules
 
-* authentication failures,
-* authorization failures,
-* malformed requests,
-* privilege escalation,
-* unexpected state transitions,
-* corrupted local data,
-* synchronization abuse,
-* dependency vulnerabilities,
-* secret exposure,
-* unsafe file handling.
-
-Security testing should be proportionate to the risk of the feature.
+Do NOT implement communication casually.
 
 ---
 
-# 16. AI-Generated Code
+## Security Testing
 
-AI-assisted development does not reduce security requirements.
+Test security-sensitive components:
+- Auth and authorization failures
+- Malformed requests
+- Privilege escalation
+- Unexpected state transitions
+- Corrupted local data
+- Sync abuse
+- Dependency vulnerabilities
+- Secret exposure
+- Unsafe file handling
 
-AI-generated code must be reviewed for:
-
-* insecure defaults,
-* incorrect cryptography,
-* authentication mistakes,
-* authorization mistakes,
-* input-validation errors,
-* secret leakage,
-* unsafe dependencies,
-* hallucinated security APIs.
-
-Do not assume generated code is secure because it compiles.
+Test scale should match feature risk.
 
 ---
 
-# 17. Supported Versions
+## AI-Generated Code
 
-Security fixes should generally focus on actively maintained releases.
+AI-assisted development does NOT reduce security requirements.
 
-The project may choose to stop supporting older versions when maintaining them becomes impractical or unsafe.
+Review generated code for:
+- Insecure defaults
+- Incorrect cryptography
+- Authentication/authorization mistakes
+- Input-validation errors
+- Secret leakage
+- Unsafe dependencies
+- Hallucinated security APIs
 
-The currently supported versions should be documented in project releases when the project reaches a release-based deployment model.
-
----
-
-# 18. Security Advisories
-
-When appropriate, maintainers may publish a security advisory containing:
-
-* affected versions,
-* severity,
-* impact,
-* fixed versions,
-* mitigation,
-* relevant technical information.
-
-Sensitive exploitation details should be handled responsibly.
+Do NOT assume generated code is secure because it compiles.
 
 ---
 
-# 19. Scope
+## Supported Versions
 
-The security policy applies to:
+Security fixes focus on actively maintained releases.
 
-* NIDAN source code,
-* official NIDAN services,
-* official APIs,
-* official deployment tools,
-* official NIDAN hardware/software components where applicable.
-
-Third-party services and dependencies have their own security policies.
+Older versions may become unsupported when maintenance becomes impractical or unsafe.
 
 ---
 
-# 20. Final Principle
+## Security Advisories
 
-Security in NIDAN is not a feature added at the end.
+When appropriate, maintainers publish advisories containing:
+- Affected versions
+- Severity and impact
+- Fixed versions
+- Mitigation steps
+- Technical information
 
-It is part of the architecture.
+Handle sensitive exploitation details responsibly.
 
-A system intended for education must protect the people using it as carefully as it protects the data they create.
+---
+
+## Final Principle
+
+Security in NIDAN is part of the architecture, not an afterthought.
+
+A system for education must protect the people using it as carefully as the data they create.
