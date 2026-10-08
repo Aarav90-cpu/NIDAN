@@ -1,0 +1,53 @@
+name: Build and Release NIDAN OS
+
+on:
+  push:
+    branches:
+      - main # Change this to match your default branch name if it is different
+
+jobs:
+  build-and-release:
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: write # Crucial permission required to create releases and upload assets
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Generate build tag
+        id: vars
+        run: echo "sha_short=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
+
+      - name: Run NIDAN build script
+        run: |
+          chmod +x ./build
+          sudo ./build
+
+      - name: Locate custom ISO file
+        id: locate_iso
+        run: |
+          # live-build typically outputs the image file in the working directory root
+          ISO_PATH=$(ls *.iso | head -n 1)
+          if [ -z "$ISO_PATH" ]; then
+            echo "Error: No ISO file found after build!"
+            exit 1
+          fi
+          echo "Found ISO: $ISO_PATH"
+          echo "iso_file=$ISO_PATH" >> $GITHUB_OUTPUT
+
+      - name: Create GitHub Pre-Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: prerelease-${{ steps.vars.outputs.sha_short }}
+          name: NIDAN OS Build (${{ steps.vars.outputs.sha_short }})
+          body: |
+            Automated pre-release build for NIDAN custom distribution.
+            Built from commit: ${{ github.sha }}
+          draft: false
+          prerelease: true
+          files: |
+            ${{ steps.locate_iso.outputs.iso_file }}
