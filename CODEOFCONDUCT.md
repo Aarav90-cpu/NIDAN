@@ -2,290 +2,173 @@
 
 ## Our Commitment
 
-NIDAN is an open-source project intended to build useful educational infrastructure.
+NIDAN welcomes contributors regardless of technical experience, background, location, education, professional status, or level of contribution.
 
-We welcome contributors who want to improve the project regardless of their:
-
-* technical experience,
-* background,
-* location,
-* education,
-* professional status,
-* preferred tools,
-* programming language preferences,
-* level of contribution.
-
-We expect everyone participating in the project to communicate respectfully and constructively.
+We expect respectful, constructive communication.
 
 ---
 
-# 1. Expected Behavior
+## Expected Behavior
 
-Contributors are expected to:
+- Communicate respectfully
+- Assume good faith
+- Discuss technical disagreements without attacking people
+- Provide useful criticism
+- Accept correction
+- Respect different experience levels
+- Keep discussions focused
+- Protect private and sensitive information
 
-* communicate respectfully,
-* assume good faith when possible,
-* discuss technical disagreements without attacking people,
-* provide useful criticism,
-* accept correction,
-* respect different levels of experience,
-* keep discussions focused on the project,
-* respect project maintainers and contributors,
-* protect private and sensitive information.
-
-Good technical disagreement is healthy.
-
-Personal hostility is not.
+Good technical disagreement is healthy. Personal hostility is not.
 
 ---
 
-# 2. Constructive Technical Debate
+## Constructive Technical Debate
 
-NIDAN is an engineering project.
+We will disagree about:
+- Programming languages
+- Architecture and design
+- Databases and tools
+- Algorithms and implementations
+- Educational methodology
 
-People will disagree about:
+That is expected and welcome.
 
-* programming languages,
-* architecture,
-* UI design,
-* databases,
-* operating systems,
-* educational methodology,
-* APIs,
-* algorithms,
-* hardware,
-* implementation strategies.
+### Good debate:
+> "I think this approach will make offline sync harder because..."
 
-That is expected.
-
-A strong disagreement should look like:
-
-> "I think this approach will make offline synchronization harder because..."
-
-Not:
-
+### Bad debate:
 > "You clearly have no idea what you're doing."
 
-Attack the idea.
-
-Do not attack the person.
+**Attack the idea, not the person.**
 
 ---
 
-# 3. Unacceptable Behavior
+## Unacceptable Behavior
 
-The following behavior is not acceptable:
-
-* harassment,
-* threats,
-* personal attacks,
-* discrimination,
-* targeted insults,
-* intimidation,
-* doxxing,
-* publishing private information,
-* deliberate disruption,
-* repeated unwanted contact,
-* sexual harassment,
-* hateful conduct,
-* impersonation,
-* malicious manipulation of project infrastructure.
+- Harassment, threats, personal attacks
+- Discrimination, targeted insults
+- Intimidation, doxxing
+- Publishing private information
+- Deliberate disruption
+- Sexual harassment
+- Hateful conduct
+- Impersonation
+- Malicious infrastructure attacks
 
 ---
 
-# 4. Student and Child Safety
+## Student and Child Safety
 
 NIDAN is an education project.
 
-Discussions and contributions involving students must be handled carefully.
+Do NOT:
+- Publish real student personal information
+- Share private student conversations
+- Post identifying educational records
+- Use real student credentials
+- Intentionally expose vulnerable users
+- Propose unsafe communication without addressing child safety
 
-Do not:
-
-* publish real student personal information,
-* share private student conversations,
-* post identifying educational records,
-* use real student credentials,
-* intentionally expose vulnerable student users,
-* propose unsafe communication mechanisms without addressing child safety.
-
-Use synthetic data when demonstrating or testing features.
+Use synthetic data for testing and demonstration.
 
 ---
 
-# 5. Privacy
+## Privacy
 
-Respect the privacy of contributors, teachers, schools and students.
+Respect the privacy of contributors, teachers, schools, and students.
 
-Do not publish private information without permission.
-
-This includes:
-
-* personal addresses,
-* private phone numbers,
-* passwords,
-* private conversations,
-* authentication information,
-* confidential school information,
-* student records.
+Do NOT publish without permission:
+- Personal addresses or phone numbers
+- Passwords or authentication info
+- Private conversations
+- Confidential school information
+- Student records
 
 ---
 
-# 6. Communication Standards
+## Communication Standards
 
-Project discussions should be:
+Discussions should be:
+- Clear and relevant
+- Technically grounded
+- Respectful
 
-* clear,
-* relevant,
-* technically grounded,
-* respectful.
-
-Avoid unnecessary hostility, sarcasm aimed at individuals, or deliberately inflammatory language.
-
-Humor is welcome when it does not become harassment or exclusion.
+Avoid unnecessary hostility, personal sarcasm, or inflammatory language. Humor is welcome when it does not become harassment or exclusion.
 
 ---
 
-# 7. Pull Request Etiquette
+## Pull Request Etiquette
 
-When reviewing contributions:
-
-### Good review
-
-```text
+### Good review:
+```
 This implementation works, but the database call
-should probably remain outside the view layer.
+should remain outside the view layer.
 
 Could we move it into NidanStorage?
 ```
 
-### Bad review
-
-```text
+### Bad review:
+```
 Why would anyone write this?
 ```
 
-Reviews should improve the code rather than embarrass the contributor.
+Reviews should improve code and the contributor, not embarrass them.
 
 ---
 
-# 8. Handling Mistakes
+## Handling Mistakes
 
-Everyone makes mistakes.
+Everyone makes mistakes. Treat them as opportunities to improve.
 
-A mistake should be treated as an opportunity to correct the implementation.
-
-Contributors should:
-
-* acknowledge mistakes,
-* correct them,
-* document important lessons when appropriate,
-* avoid repeating known problems.
+- Acknowledge mistakes
+- Correct them
+- Document lessons when appropriate
+- Avoid repeating problems
 
 Nobody is expected to know everything.
 
 ---
 
-# 9. Maintainer Responsibilities
+## Reporting Issues
 
-Project maintainers are expected to:
+For conduct violations:
+1. Contact maintainers privately through official channels
+2. Do NOT create public arguments
+3. Provide: what happened, where, when, who, evidence
 
-* enforce this Code of Conduct fairly,
-* review reports responsibly,
-* avoid favoritism,
-* keep project discussions constructive,
-* protect private information,
-* avoid unnecessary public disclosure of sensitive reports.
-
-Maintainers are not required to accept every proposed change.
-
-Technical decisions may be made in the interests of the project's long-term maintainability and purpose.
+For security vulnerabilities, see `SECURITY.md`.
 
 ---
 
-# 10. Reporting Conduct Issues
+## Enforcement
 
-For behavior that violates this Code of Conduct, contact the project maintainers privately through the official project communication channel.
+Maintainers may take appropriate action:
+- Requesting correction
+- Removing inappropriate content
+- Restricting discussion participation
+- Temporarily restricting contributions
+- Permanently removing participation
 
-Do not turn serious conduct complaints into public arguments.
-
-Provide:
-
-* what happened,
-* where it happened,
-* when it happened,
-* who was involved when known,
-* relevant evidence,
-* any immediate safety concerns.
-
-Do not publicly expose private information while reporting a conduct issue.
+Response is proportional to behavior and impact.
 
 ---
 
-# 11. Security Issues Are Different
+## Scope
 
-Do not use public issues to report security vulnerabilities.
-
-See:
-
-```text
-SECURITY.md
-```
-
-for security reporting procedures.
+This Code of Conduct applies to:
+- GitHub repositories and issues
+- Pull requests and discussions
+- Project meetings and communications
+- Official project events
+- Spaces representing the project
 
 ---
 
-# 12. Enforcement
-
-Project maintainers may take appropriate action when this Code of Conduct is violated.
-
-Possible actions include:
-
-* requesting a correction,
-* removing inappropriate content,
-* restricting participation in discussions,
-* temporarily restricting contribution access,
-* permanently removing participation privileges.
-
-The response should be proportional to the behavior and its impact.
-
----
-
-# 13. False or Malicious Reports
-
-Reports made in good faith are welcome.
-
-Knowingly fabricating evidence, impersonating another person, or deliberately making malicious reports may itself violate this Code of Conduct.
-
-This does not prevent people from reporting behavior they genuinely believe is inappropriate.
-
----
-
-# 14. Scope
-
-This Code of Conduct applies to project spaces and activities associated with NIDAN, including where applicable:
-
-* GitHub repositories,
-* issues,
-* pull requests,
-* discussions,
-* project meetings,
-* official communication channels,
-* project events,
-* other spaces officially representing the project.
-
----
-
-# 15. Final Principle
+## Final Principle
 
 NIDAN exists to build something useful.
 
-People should be able to contribute, disagree, learn, improve and build without being personally attacked.
+People should contribute, disagree, learn, improve, and build without personal attacks.
 
-Be technically rigorous.
-
-Be honest.
-
-Be respectful.
-
-Build things that matter.
+**Be technically rigorous. Be honest. Be respectful. Build things that matter.**
