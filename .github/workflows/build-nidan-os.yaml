@@ -22,23 +22,38 @@ jobs:
         id: vars
         run: echo "sha_short=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
 
-      - name: Run NIDAN build script
-        working-directory: NIDAN/OS
+      - name: Build NIDAN Engine and Compile ISO
         run: |
-          chmod +x ./build
-          ./build
+          # Navigate to the correct directory structure
+          cd OS/
+          
+          export DOCKER_BUILDKIT=1
+          
+          echo "Step 1: Building/Verifying the NIDAN Build Engine..."
+          docker build -t nidan-builder .
+          
+          echo "Step 2: Checking configuration engine layout..."
+          if [ ! -d "config" ]; then
+              echo "Initializing fresh live-build layout..."
+              docker run --privileged --rm -v "$(pwd)":/workspace nidan-builder lb config
+          fi
+          
+          echo "Step 3: Compiling your NIDAN custom ISO..."
+          docker run --privileged --rm -v "$(pwd)":/workspace nidan-builder sh -c "lb clean --purge && lb build"
+          
+          echo "Success! Your custom NIDAN distribution ISO is ready."
 
       - name: Locate custom ISO file
         id: locate_iso
-        working-directory: NIDAN/OS
         run: |
+          cd OS/
           ISO_PATH=$(ls *.iso | head -n 1)
           if [ -z "$ISO_PATH" ]; then
             echo "Error: No ISO file found after build!"
             exit 1
           fi
           echo "Found ISO: $ISO_PATH"
-          echo "iso_file=NIDAN/OS/$ISO_PATH" >> $GITHUB_OUTPUT
+          echo "iso_file=OS/$ISO_PATH" >> $GITHUB_OUTPUT
 
       - name: Create GitHub Pre-Release
         uses: softprops/action-gh-release@v2
