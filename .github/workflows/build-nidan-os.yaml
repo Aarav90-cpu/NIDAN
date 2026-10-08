@@ -3,13 +3,13 @@ name: Build and Release NIDAN OS
 on:
   push:
     branches:
-      - main # Change this to match your default branch name if it is different
+      - main
 
 jobs:
   build-and-release:
     runs-on: ubuntu-24.04
     permissions:
-      contents: write # Crucial permission required to create releases and upload assets
+      contents: write
 
     steps:
       - name: Checkout repository
@@ -23,21 +23,22 @@ jobs:
         run: echo "sha_short=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
 
       - name: Run NIDAN build script
+        working-directory: NIDAN/OS
         run: |
           chmod +x ./build
           sudo ./build
 
       - name: Locate custom ISO file
         id: locate_iso
+        working-directory: NIDAN/OS
         run: |
-          # live-build typically outputs the image file in the working directory root
           ISO_PATH=$(ls *.iso | head -n 1)
           if [ -z "$ISO_PATH" ]; then
             echo "Error: No ISO file found after build!"
             exit 1
           fi
           echo "Found ISO: $ISO_PATH"
-          echo "iso_file=$ISO_PATH" >> $GITHUB_OUTPUT
+          echo "iso_file=NIDAN/OS/$ISO_PATH" >> $GITHUB_OUTPUT
 
       - name: Create GitHub Pre-Release
         uses: softprops/action-gh-release@v2
