@@ -1,0 +1,26 @@
+#!/bin/bash
+# ~/NIDAN/OS/build.sh
+
+# Exit immediately if any command fails
+set -e
+
+# Ensure we are executing inside the correct directory structure
+cd "$(dirname "$0")"
+
+export DOCKER_BUILDKIT=1
+
+echo "Step 1: Building/Verifying the NIDAN Build Engine..."
+docker build -t nidan-builder .
+
+echo "Step 2: Checking configuration engine layout..."
+# If live-build hasn't been initialized yet, run configuration setup automatically
+if [ ! -d "config" ]; then
+    echo "Initializing fresh live-build layout..."
+    docker run --privileged --rm -v "$(pwd)":/workspace nidan-builder lb config
+fi
+
+echo "Step 3: Compiling your NIDAN custom ISO..."
+# Run the purge to clear past artifacts, then compile the fresh system architecture
+docker run --privileged --rm -v "$(pwd)":/workspace nidan-builder sh -c "lb clean --purge && lb build"
+
+echo " Success! Your custom NIDAN distribution ISO is ready inside NIDAN/OS/"
