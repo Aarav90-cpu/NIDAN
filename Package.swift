@@ -1,10 +1,10 @@
-// swift-tools-version: 5.9
+// swift-tools-version: 6.0
 import PackageDescription
 
 let package = Package(
     name: "NIDAN",
     platforms: [
-        .macOS(.v13) // Allowing macOS for local development/testing flexibility
+        .macOS(.v13)
     ],
     products: [
         .library(name: "NidanModels", targets: ["NidanModels"]),
