@@ -1,0 +1,44 @@
+# Kernel and boot
+linux-image-amd64
+
+# Firmware
+firmware-linux
+
+# Networking
+network-manager
+wpasupplicant
+iproute2
+net-tools
+
+# Audio
+pipewire
+wireplumber
+alsa-utils
+
+# Graphics
+mesa-utils
+libgl1-mesa-dri
+libegl1
+cage
+foot
+
+# Input devices
+libinput-bin
+xserver-xorg-input-libinput
+
+# Power management and Suspend/Resume
+acpi
+acpid
+upower
+pm-utils
+
+# Storage mounting
+udisks2
+dosfstools
+ntfs-3g
+
+# User management and System
+sudo
+console-setup
+locales
+kbd

@@ -1,0 +1,11 @@
+[Unit]
+Description=NIDAN Update Service (Stub)
+After=network.target
+
+[Service]
+Type=simple
+ExecStart=/usr/local/bin/nidan-update-service
+Restart=always
+
+[Install]
+WantedBy=multi-user.target

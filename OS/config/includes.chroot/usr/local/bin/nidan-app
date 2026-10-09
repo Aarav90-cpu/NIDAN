@@ -1,0 +1,4 @@
+#!/bin/bash
+# Placeholder for the actual NIDAN SwiftCrossUI application
+# For now, it just launches a full-screen terminal (foot)
+exec foot -a "NIDAN" -T "NIDAN Minimal Session Placeholder"

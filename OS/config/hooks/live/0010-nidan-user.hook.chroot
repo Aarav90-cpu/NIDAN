@@ -1,0 +1,9 @@
+#!/bin/sh
+set -e
+echo "I: Creating student user for NIDAN session..."
+
+# Check if user already exists
+if ! id "student" >/dev/null 2>&1; then
+    useradd -m -s /bin/bash -G audio,video,input,plugdev student
+    echo "student user created."
+fi

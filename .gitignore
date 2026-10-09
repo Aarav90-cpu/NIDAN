@@ -1,0 +1,22 @@
+# NIDAN Root .gitignore
+
+# Mac OS
+.DS_Store
+
+# SwiftPM
+.build/
+.swiftpm/
+Packages/**/.build/
+Packages/**/.swiftpm/
+
+# Live Build OS Artifacts
+OS/cache/
+OS/chroot/
+OS/binary/
+OS/local/
+OS/.build/
+OS/*.iso
+OS/*.files
+OS/*.contents
+OS/*.packages
+OS/binary.modified_timestamps

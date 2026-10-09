@@ -1,0 +1,11 @@
+[Unit]
+Description=NIDAN Device Service (Stub)
+After=network.target
+
+[Service]
+Type=simple
+ExecStart=/usr/local/bin/nidan-device-service
+Restart=always
+
+[Install]
+WantedBy=multi-user.target

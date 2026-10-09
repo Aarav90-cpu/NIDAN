@@ -1,0 +1,10 @@
+#!/bin/sh
+set -e
+echo "I: Enabling NIDAN system services..."
+
+systemctl enable nidan-device.service
+systemctl enable nidan-sync.service
+systemctl enable nidan-content.service
+systemctl enable nidan-update.service
+
+echo "I: NIDAN system services enabled successfully."

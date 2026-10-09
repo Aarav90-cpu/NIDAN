@@ -1,0 +1,11 @@
+[Unit]
+Description=NIDAN Content Service (Stub)
+After=network.target
+
+[Service]
+Type=simple
+ExecStart=/usr/local/bin/nidan-content-service
+Restart=always
+
+[Install]
+WantedBy=multi-user.target

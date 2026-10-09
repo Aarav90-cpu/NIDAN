@@ -25,7 +25,7 @@ LB_BOOTLOADER_BIOS="syslinux"
 LB_BOOTLOADER_EFI="grub-efi"
 
 # Set bootloaders
-LB_BOOTLOADERS=""
+LB_BOOTLOADERS="grub-efi syslinux"
 
 # Set checksums
 LB_CHECKSUMS="sha256"
@@ -53,7 +53,7 @@ LB_BUILD_WITH_CHROOT="true"
 LB_DEBIAN_INSTALLER="none"
 
 # Set debian-installer suite
-LB_DEBIAN_INSTALLER_DISTRIBUTION="testing"
+LB_DEBIAN_INSTALLER_DISTRIBUTION="trixie"
 
 # Set debian-installer preseed filename/url
 LB_DEBIAN_INSTALLER_PRESEEDFILE=""
