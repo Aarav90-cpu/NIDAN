@@ -122,6 +122,57 @@ public final class DatabaseManager: StorageProvider, Sendable {
     }
     
     public func saveStudent(_ student: Student) async throws {
-        // Implementation stub for now
+        try await dbPool.write { db in
+            try db.execute(
+                sql: "INSERT INTO students (id, name, role) VALUES (?, ?, ?) ON CONFLICT(id) DO UPDATE SET name=excluded.name, role=excluded.role",
+                arguments: [student.id.uuidString, student.name, student.role.rawValue]
+            )
+        }
+    }
+    
+    public func saveCourse(_ course: Course) async throws {
+        // Mapped to "subjects" table for simplicity per plan schema
+        try await dbPool.write { db in
+            try db.execute(
+                sql: "INSERT INTO subjects (id, name, description) VALUES (?, ?, ?) ON CONFLICT(id) DO UPDATE SET name=excluded.name",
+                arguments: [course.id.uuidString, course.name, ""]
+            )
+        }
+    }
+    
+    public func saveSkill(_ skill: Skill) async throws {
+        try await dbPool.write { db in
+            try db.execute(
+                sql: "INSERT INTO skills (id, name, subjectId, prerequisiteIds) VALUES (?, ?, ?, ?) ON CONFLICT(id) DO UPDATE SET name=excluded.name",
+                arguments: [skill.id.uuidString, skill.name, skill.subjectId.uuidString, "[]"]
+            )
+        }
+    }
+    
+    public func saveAssessment(_ assessment: Assessment) async throws {
+        try await dbPool.write { db in
+            try db.execute(
+                sql: "INSERT INTO assessments (id, title, skillId) VALUES (?, ?, ?) ON CONFLICT(id) DO UPDATE SET title=excluded.title",
+                arguments: [assessment.id.uuidString, assessment.title, assessment.skillId.uuidString]
+            )
+        }
+    }
+    
+    public func saveAssignment(_ assignment: Assignment) async throws {
+        try await dbPool.write { db in
+            try db.execute(
+                sql: "INSERT INTO assignments (id, studentId, assessmentId, dueDate, isCompleted) VALUES (?, ?, ?, ?, ?) ON CONFLICT(id) DO UPDATE SET isCompleted=excluded.isCompleted",
+                arguments: [assignment.id.uuidString, assignment.studentId.uuidString, assignment.assessmentId.uuidString, assignment.dueDate, assignment.isCompleted]
+            )
+        }
+    }
+    
+    public func saveProgress(_ progress: Progress) async throws {
+        try await dbPool.write { db in
+            try db.execute(
+                sql: "INSERT INTO progress (id, studentId, courseId, percentComplete) VALUES (?, ?, ?, ?) ON CONFLICT(id) DO UPDATE SET percentComplete=excluded.percentComplete",
+                arguments: [progress.id.uuidString, progress.studentId.uuidString, progress.courseId.uuidString, progress.percentComplete]
+            )
+        }
     }
 }

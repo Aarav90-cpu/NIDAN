@@ -8,6 +8,9 @@ public protocol StorageProvider: Sendable {
     func getStudent(id: UUID) async throws -> Student?
     func saveStudent(_ student: Student) async throws
     
-    // As we build features, we will add more methods here 
-    // for skills, assessments, progress, etc.
+    func saveCourse(_ course: Course) async throws
+    func saveSkill(_ skill: Skill) async throws
+    func saveAssessment(_ assessment: Assessment) async throws
+    func saveAssignment(_ assignment: Assignment) async throws
+    func saveProgress(_ progress: Progress) async throws
 }

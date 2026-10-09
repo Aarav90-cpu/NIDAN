@@ -16,6 +16,7 @@ let package = Package(
         .library(name: "NidanSync", targets: ["NidanSync"]),
         .library(name: "NidanNetworking", targets: ["NidanNetworking"]),
         .library(name: "NidanUI", targets: ["NidanUI"]),
+        .executable(name: "NidanApp", targets: ["NidanApp"])
     ],
     dependencies: [
         // Robust SQLite wrapper
@@ -44,5 +45,8 @@ let package = Package(
         
         // UI Layer (Strict separation from Core)
         .target(name: "NidanUI", dependencies: ["NidanCore", "NidanLearning", "NidanAssessment", "NidanAssignments"], path: "Packages/NidanUI/Sources"),
+        
+        // App Executable (Integration / Entry Point)
+        .executableTarget(name: "NidanApp", dependencies: ["NidanCore", "NidanModels", "NidanStorage", "NidanUI"], path: "Packages/NidanApp/Sources")
     ]
 )
