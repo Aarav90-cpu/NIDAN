@@ -70,9 +70,19 @@ jobs:
 
       - name: Build NIDAN Swift App
         run: |
-          echo "Compiling NidanApp for x86_64..."
-          docker run --rm --platform linux/amd64 -v "$(pwd)":/workspace -w /workspace swift:6.0 bash -c "swift build -c release"
-          cp .build/release/NidanApp NidanApp-x86_64
+          echo "Compiling NidanApp for x86_64 with Musl and Mimalloc..."
+          docker run --rm --platform linux/amd64 -v "$(pwd)":/workspace -w /workspace swift:6.0 bash -c "\
+            apt-get update && apt-get install -y musl-tools cmake git curl && \
+            git clone --depth 1 https://github.com/microsoft/mimalloc.git && \
+            cd mimalloc && mkdir build && cd build && \
+            CC=musl-gcc cmake .. -DMI_BUILD_SHARED=OFF -DMI_BUILD_STATIC=ON && \
+            make -j\$(nproc) && cd ../.. && \
+            swift sdk install https://download.swift.org/swift-6.0.1-release/static-sdk/swift-6.0.1-RELEASE/swift-6.0.1-RELEASE_static-linux-0.0.1.artifactbundle.tar.gz && \
+            swift build -c release --product NidanApp --swift-sdk x86_64-swift-linux-musl \
+              -Xswiftc -static-executable \
+              -Xlinker -L\$(pwd)/mimalloc/build \
+              -Xlinker -lmimalloc"
+          cp .build/x86_64-swift-linux-musl/release/NidanApp NidanApp-x86_64
 
       - name: Create GitHub Pre-Release
         uses: softprops/action-gh-release@v2

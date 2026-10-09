@@ -8,8 +8,9 @@ func runExitGate() async throws {
     print("==================================")
     print("[PASS] App starts")
     
-    // 1. Initialize DB in a temp file to support DatabasePool WAL mode
-    let dbPath = FileManager.default.temporaryDirectory.appendingPathComponent("nidan_test.sqlite").path
+    // 1. Initialize DB in a securely generated temp file to prevent predictable temp file vulnerabilities
+    let secureTempDB = UUID().uuidString + "_nidan_test.sqlite"
+    let dbPath = FileManager.default.temporaryDirectory.appendingPathComponent(secureTempDB).path
     let dbManager = try DatabaseManager(path: dbPath)
     let env = Environment(logger: PrintLogger(), storage: dbManager)
     
