@@ -8,7 +8,7 @@ on:
 jobs:
   build-and-release:
     # Running on an ARM64 runner machine
-    runs-on: ubuntu-24.04-arm64 
+    runs-on: ubuntu-24.04-arm
     permissions:
       contents: write
 
