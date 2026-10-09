@@ -12,5 +12,5 @@ public protocol StorageProvider: Sendable {
     func saveSkill(_ skill: Skill) async throws
     func saveAssessment(_ assessment: Assessment) async throws
     func saveAssignment(_ assignment: Assignment) async throws
-    func saveProgress(_ progress: Progress) async throws
+    func saveProgress(_ progress: NidanModels.Progress) async throws
 }

@@ -167,7 +167,7 @@ public final class DatabaseManager: StorageProvider, Sendable {
         }
     }
     
-    public func saveProgress(_ progress: Progress) async throws {
+    public func saveProgress(_ progress: NidanModels.Progress) async throws {
         try await dbPool.write { db in
             try db.execute(
                 sql: "INSERT INTO progress (id, studentId, courseId, percentComplete) VALUES (?, ?, ?, ?) ON CONFLICT(id) DO UPDATE SET percentComplete=excluded.percentComplete",

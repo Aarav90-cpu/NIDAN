@@ -41,7 +41,7 @@ func runExitGate() async throws {
     print("✅ Assignment can be stored")
     
     // 7. Progress
-    let progress = Progress(studentId: student.id, courseId: course.id, percentComplete: 0.15)
+    let progress = NidanModels.Progress(studentId: student.id, courseId: course.id, percentComplete: 0.15)
     try await dbManager.saveProgress(progress)
     print("✅ Progress can be calculated: \(progress.percentComplete * 100)%")
     
