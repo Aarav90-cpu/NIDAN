@@ -1,6 +1,6 @@
 import Foundation
 
-public struct Concept: Codable, Identifiable {
+public struct Concept: Codable, Identifiable, Sendable {
     public let id: UUID
     public var name: String
     public var description: String
@@ -14,21 +14,23 @@ public struct Concept: Codable, Identifiable {
     }
 }
 
-public struct Skill: Codable, Identifiable {
+public struct Skill: Codable, Identifiable, Sendable {
     public let id: UUID
     public var name: String
-    public var conceptId: UUID
+    public var subjectId: UUID
+    public var prerequisiteIds: [UUID]
     public var description: String
     
-    public init(id: UUID = UUID(), name: String, conceptId: UUID, description: String) {
+    public init(id: UUID = UUID(), name: String, subjectId: UUID, prerequisiteIds: [UUID] = [], description: String = "") {
         self.id = id
         self.name = name
-        self.conceptId = conceptId
+        self.subjectId = subjectId
+        self.prerequisiteIds = prerequisiteIds
         self.description = description
     }
 }
 
-public struct Lesson: Codable, Identifiable {
+public struct Lesson: Codable, Identifiable, Sendable {
     public let id: UUID
     public var title: String
     public var conceptId: UUID
@@ -42,7 +44,7 @@ public struct Lesson: Codable, Identifiable {
     }
 }
 
-public struct ContentItem: Codable, Identifiable {
+public struct ContentItem: Codable, Identifiable, Sendable {
     public let id: UUID
     public var title: String
     public var url: URL?
@@ -58,7 +60,7 @@ public struct ContentItem: Codable, Identifiable {
     }
 }
 
-public enum ContentType: String, Codable {
+public enum ContentType: String, Codable, Sendable {
     case video
     case text
     case interactive

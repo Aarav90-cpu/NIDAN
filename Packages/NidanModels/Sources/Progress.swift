@@ -1,6 +1,6 @@
 import Foundation
 
-public struct Progress: Codable, Identifiable {
+public struct Progress: Codable, Identifiable, Sendable {
     public let id: UUID
     public var studentId: UUID
     public var courseId: UUID
@@ -14,7 +14,7 @@ public struct Progress: Codable, Identifiable {
     }
 }
 
-public struct Mastery: Codable, Identifiable {
+public struct Mastery: Codable, Identifiable, Sendable {
     public let id: UUID
     public var studentId: UUID
     public var skillId: UUID

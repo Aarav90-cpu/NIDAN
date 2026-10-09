@@ -1,18 +1,18 @@
 import Foundation
 
-public protocol User {
+public protocol User: Sendable {
     var id: UUID { get }
     var name: String { get }
     var role: UserRole { get }
 }
 
-public enum UserRole: String, Codable {
+public enum UserRole: String, Codable, Sendable {
     case student
     case teacher
     case admin
 }
 
-public struct Student: User, Codable, Identifiable {
+public struct Student: User, Codable, Identifiable, Sendable {
     public let id: UUID
     public var name: String
     public let role: UserRole
@@ -24,7 +24,7 @@ public struct Student: User, Codable, Identifiable {
     }
 }
 
-public struct Teacher: User, Codable, Identifiable {
+public struct Teacher: User, Codable, Identifiable, Sendable {
     public let id: UUID
     public var name: String
     public let role: UserRole
