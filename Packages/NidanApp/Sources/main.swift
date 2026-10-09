@@ -4,9 +4,9 @@ import NidanModels
 import NidanStorage
 
 func runExitGate() async throws {
-    print("🚀 NIDAN Phase 3 Exit Gate Test")
+    print("NIDAN Phase 3 Exit Gate Test")
     print("==================================")
-    print("✅ App starts")
+    print("[PASS] App starts")
     
     // 1. Initialize DB in a temp file to support DatabasePool WAL mode
     let dbPath = FileManager.default.temporaryDirectory.appendingPathComponent("nidan_test.sqlite").path
@@ -14,46 +14,46 @@ func runExitGate() async throws {
     let env = Environment(logger: PrintLogger(), storage: dbManager)
     
     try await CurrentEnvironment.$current.withValue(env) {
-        print("✅ Local DB works")
+        print("[PASS] Local DB works")
         
         // 2. Sample Student
         let student = Student(name: "Aarav")
         try await dbManager.saveStudent(student)
-        print("✅ Sample student exists: \(student.name)")
+        print("[PASS] Sample student exists: \(student.name)")
         
         // 3. Sample Course
         let course = Course(name: "Mathematics 101", subjectId: UUID())
         try await dbManager.saveCourse(course)
-        print("✅ Sample course exists: \(course.name)")
+        print("[PASS] Sample course exists: \(course.name)")
         
         // 4. Sample Skill Graph
         let skill1 = Skill(name: "Addition", subjectId: course.id, prerequisiteIds: [])
         let skill2 = Skill(name: "Multiplication", subjectId: course.id, prerequisiteIds: [skill1.id])
         try await dbManager.saveSkill(skill1)
         try await dbManager.saveSkill(skill2)
-        print("✅ Sample skill graph exists (Addition -> Multiplication)")
+        print("[PASS] Sample skill graph exists (Addition -> Multiplication)")
         
         // 5. Assessment
         let assessment = Assessment(title: "Multiplication Quiz", skillId: skill2.id)
         try await dbManager.saveAssessment(assessment)
-        print("✅ Assessment can be stored: \(assessment.title)")
+        print("[PASS] Assessment can be stored: \(assessment.title)")
         
         // 6. Assignment
         let assignment = Assignment(studentId: student.id, assessmentId: assessment.id, dueDate: Date())
         try await dbManager.saveAssignment(assignment)
-        print("✅ Assignment can be stored")
+        print("[PASS] Assignment can be stored")
         
         // 7. Progress
         let progress = NidanModels.Progress(studentId: student.id, courseId: course.id, percentComplete: 0.15)
         try await dbManager.saveProgress(progress)
-        print("✅ Progress can be calculated: \(progress.percentComplete * 100)%")
+        print("[PASS] Progress can be calculated: \(progress.percentComplete * 100)%")
         
-        print("\n🎉 PHASE 3 EXIT GATE PASSED: Entire basic flow works offline")
+        print("\nPHASE 3 EXIT GATE PASSED: Entire basic flow works offline")
     }
 }
 
 do {
     try await runExitGate()
 } catch {
-    print("❌ Exit Gate Failed: \(error)")
+    print("[FAIL] Exit Gate Failed: \(error)")
 }
