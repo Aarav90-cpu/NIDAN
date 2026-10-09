@@ -7,9 +7,12 @@ public struct Environment: Sendable {
     // Default clock for production; tests can override this with a test clock
     public var clock: any Clock<Duration>
     
-    public init(logger: LoggerProvider = PrintLogger(), clock: any Clock<Duration> = ContinuousClock()) {
+    public var storage: StorageProvider?
+    
+    public init(logger: LoggerProvider = PrintLogger(), clock: any Clock<Duration> = ContinuousClock(), storage: StorageProvider? = nil) {
         self.logger = logger
         self.clock = clock
+        self.storage = storage
     }
 }
 

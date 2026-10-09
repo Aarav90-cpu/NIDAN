@@ -18,7 +18,8 @@ let package = Package(
         .library(name: "NidanUI", targets: ["NidanUI"]),
     ],
     dependencies: [
-        // SwiftCrossUI and Vapor will be added in subsequent phases.
+        // Robust SQLite wrapper
+        .package(url: "https://github.com/groue/GRDB.swift.git", from: "7.0.0")
     ],
     targets: [
         // Domain Models
@@ -33,7 +34,11 @@ let package = Package(
         .target(name: "NidanAssignments", dependencies: ["NidanModels", "NidanCore"], path: "Packages/NidanAssignments/Sources"),
         
         // Infrastructure
-        .target(name: "NidanStorage", dependencies: ["NidanModels", "NidanCore"], path: "Packages/NidanStorage/Sources"),
+        .target(name: "NidanStorage", dependencies: [
+            "NidanModels", 
+            "NidanCore",
+            .product(name: "GRDB", package: "GRDB.swift")
+        ], path: "Packages/NidanStorage/Sources"),
         .target(name: "NidanNetworking", dependencies: ["NidanModels", "NidanCore"], path: "Packages/NidanNetworking/Sources"),
         .target(name: "NidanSync", dependencies: ["NidanModels", "NidanCore", "NidanNetworking", "NidanStorage"], path: "Packages/NidanSync/Sources"),
         
