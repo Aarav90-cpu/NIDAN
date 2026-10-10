@@ -9,26 +9,21 @@ Business logic (`NidanCore`) must remain completely independent of the UI framew
 
 ## High-Level Flow
 ```
-NIDAN CORE
-    │
-    ├── Learning
-    ├── Assessments
-    ├── Assignments
-    ├── Progress
-    ├── Sync
-    ├── Content
-    └── User models
-          │
-          ▼
-     NIDAN UI API
-          │
-          ▼
-     SwiftCrossUI
-          │
-     ┌────┼─────┐
-     ▼    ▼     ▼
-   Linux Windows other
+Student / Teacher / Leadership Web UI
+      │ authenticated REST
+      ▼
+NidanApp (Vapor school API)
+      │
+      ├── NidanCore / NidanModels
+      ├── NidanStorage (SQLite)
+      └── Role and class/subject authorization
+
+NidanContentServer (separate Vapor process)
+      │
+      └── Approved static files only
 ```
+
+The school API is authoritative for identity, class membership, assignments, marks, notices, chapter coverage, and doubts. The content process does not open the school database and does not grant access to school records. Both processes bind to loopback unless an operator explicitly configures a classroom-network bind address.
 
 ## Module Dependencies
 The Swift Packages are organized with strict dependency boundaries:
@@ -65,3 +60,5 @@ Sync Engine
    ↓
 Local DB
 ```
+
+The current Vapor prototype persists learning workflows on the server. Offline device write queues, retry, conflict handling, device provisioning, and complete sync semantics remain planned work; the current server is not yet the finished offline-first architecture.

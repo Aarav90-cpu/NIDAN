@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>NIDAN Settings</title>
+    <link rel="stylesheet" href="/src/style.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Symbols+Outlined" rel="stylesheet">
+    <style>
+      .settings-container {
+        max-width: 800px;
+        margin: 2rem auto;
+        padding: 0 1rem;
+      }
+      .settings-section {
+        background: var(--surface);
+        border-radius: 16px;
+        border: 1px solid var(--card-border);
+        overflow: hidden;
+        margin-bottom: 2rem;
+      }
+      .settings-header {
+        padding: 1rem 1.5rem;
+        border-bottom: 1px solid var(--card-border);
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        background: rgba(0,0,0,0.02);
+      }
+      .settings-header h2 {
+        margin: 0;
+        font-size: 1.2rem;
+        font-weight: 500;
+        color: var(--text-primary);
+      }
+      .settings-header md-icon {
+        color: var(--primary);
+      }
+      .account-actions {
+        display: flex;
+        justify-content: flex-end;
+        padding: 0 1.5rem 1rem;
+      }
+    </style>
+  </head>
+  <body class="light-theme">
+    <div id="app">
+      <header class="top-bar">
+        <md-icon-button onclick="window.location.href='/'">
+          <span class="material-symbols-outlined">arrow_back</span>
+        </md-icon-button>
+        <h1 style="font-size: 1.5rem; margin: 0; margin-left: 0.5rem;">Settings</h1>
+      </header>
+
+      <main class="settings-container">
+        
+        <!-- Account -->
+        <section class="settings-section">
+          <div class="settings-header">
+            <md-icon>person</md-icon>
+            <h2>Account</h2>
+          </div>
+          <md-list>
+            <md-list-item>
+              <div slot="headline" id="account-name">Profile</div>
+              <div slot="supporting-text" id="account-role">Loading account...</div>
+              <md-icon slot="end">chevron_right</md-icon>
+            </md-list-item>
+          </md-list>
+          <div class="account-actions">
+            <md-outlined-button id="logout-btn">
+              <md-icon>logout</md-icon>
+              Sign out
+            </md-outlined-button>
+          </div>
+        </section>
+
+        <!-- Preferences -->
+        <section class="settings-section">
+          <div class="settings-header">
+            <md-icon>tune</md-icon>
+            <h2>Preferences</h2>
+          </div>
+          <md-list>
+            <md-list-item>
+              <div slot="headline">Language</div>
+              <div slot="supporting-text">English (US)</div>
+              <md-icon slot="end">language</md-icon>
+            </md-list-item>
+            <md-divider></md-divider>
+            <md-list-item>
+              <div slot="headline">Accessibility</div>
+              <div slot="supporting-text">Text size, contrast, text-to-speech</div>
+              <md-icon slot="end">accessibility</md-icon>
+            </md-list-item>
+          </md-list>
+        </section>
+
+        <!-- Storage & Downloads -->
+        <section class="settings-section">
+          <div class="settings-header">
+            <md-icon>storage</md-icon>
+            <h2>Storage & Downloads</h2>
+          </div>
+          <md-list>
+            <md-list-item>
+              <div slot="headline">Local Storage</div>
+              <div slot="supporting-text">Storage usage is not measured by this prototype.</div>
+              <md-icon slot="end">folder</md-icon>
+            </md-list-item>
+            <md-divider></md-divider>
+            <md-list-item>
+              <div slot="headline">Manage Downloads</div>
+              <div slot="supporting-text">No approved offline resources are installed.</div>
+              <md-icon slot="end">download</md-icon>
+            </md-list-item>
+          </md-list>
+        </section>
+
+        <!-- System & Network -->
+        <section class="settings-section">
+          <div class="settings-header">
+            <md-icon>device_hub</md-icon>
+            <h2>System & Network</h2>
+          </div>
+          <md-list>
+            <md-list-item>
+              <div slot="headline">Device Information</div>
+              <div slot="supporting-text">Device build information is not available.</div>
+              <md-icon slot="end">smartphone</md-icon>
+            </md-list-item>
+            <md-divider></md-divider>
+            <md-list-item>
+              <div slot="headline">Network Status</div>
+              <div slot="supporting-text">Network and synchronization state are not reported yet.</div>
+              <md-icon slot="end">wifi</md-icon>
+            </md-list-item>
+          </md-list>
+        </section>
+
+      </main>
+    </div>
+    <script type="module" src="/src/settings.ts"></script>
+  </body>
+</html>

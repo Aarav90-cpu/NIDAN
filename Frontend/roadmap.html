@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>NIDAN Roadmap</title>
+    <link rel="stylesheet" href="/src/style.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Symbols+Outlined" rel="stylesheet">
+    <style>
+      .timeline {
+        position: relative;
+        padding-left: 2rem;
+        margin-top: 2rem;
+      }
+      .timeline::before {
+        content: '';
+        position: absolute;
+        left: 11px;
+        top: 0;
+        bottom: 0;
+        width: 2px;
+        background: var(--card-border);
+      }
+      .timeline-node {
+        position: relative;
+        margin-bottom: 2rem;
+      }
+      .timeline-dot {
+        position: absolute;
+        left: -2rem;
+        top: 4px;
+        width: 16px;
+        height: 16px;
+        border-radius: 50%;
+        background: var(--surface);
+        border: 4px solid var(--primary);
+        z-index: 1;
+      }
+      .timeline-dot.completed {
+        background: var(--primary);
+      }
+      .timeline-dot.current {
+        background: white;
+        box-shadow: 0 0 0 4px rgba(0, 96, 168, 0.2);
+      }
+      .timeline-dot.future {
+        border-color: var(--text-secondary);
+        background: var(--surface);
+      }
+      .timeline-content {
+        background: var(--surface);
+        padding: 1.5rem;
+        border-radius: 12px;
+        border: 1px solid var(--card-border);
+        box-shadow: var(--card-shadow);
+      }
+      .timeline-content h3 {
+        margin: 0 0 0.5rem 0;
+        font-size: 1.2rem;
+        font-weight: 500;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+      }
+      .timeline-content p {
+        margin: 0;
+        color: var(--text-secondary);
+        line-height: 1.5;
+      }
+      .node-completed .timeline-content h3 {
+        color: #2e7d32;
+      }
+      .node-current .timeline-content h3 {
+        color: var(--primary);
+      }
+      .node-future .timeline-content h3 {
+        color: var(--text-secondary);
+      }
+    </style>
+  </head>
+  <body class="light-theme">
+    <div id="app">
+      <header class="top-bar">
+        <div class="greeting" style="display: flex; align-items: center; gap: 1rem;">
+          <md-icon-button onclick="window.location.href='/'">
+            <span class="material-symbols-outlined">arrow_back</span>
+          </md-icon-button>
+          <div>
+            <h1>Learning Roadmap</h1>
+            <p>Your educational journey</p>
+          </div>
+        </div>
+      </header>
+
+      <main class="dashboard-grid" style="grid-template-columns: 1fr; max-width: 800px; margin: 0 auto;">
+        
+        <div class="timeline" id="roadmap-timeline">
+          <!-- Populated by JS -->
+        </div>
+
+      </main>
+    </div>
+    <script type="module" src="/src/roadmap.ts"></script>
+  </body>
+</html>

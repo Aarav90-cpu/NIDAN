@@ -102,6 +102,25 @@ A valid student session must NOT grant access to another student's data.
 
 Enforce authorization at appropriate boundaries.
 
+### Local enrollment prototype
+
+The current local prototype can issue a one-time, role-bound enrollment code with:
+
+```text
+swift run NidanApp issue-enrollment-code student --classes 9A
+swift run NidanApp issue-enrollment-code teacher --classes 9A,9B --subjects Mathematics,Science
+swift run NidanApp issue-enrollment-code vicePrincipal
+swift run NidanApp issue-enrollment-code principal
+```
+
+The code expires after 24 hours, is accepted only for its assigned role, and is stored as a SHA-256 verifier. The school operator must deliver the printed code directly to the intended user and keep terminal output private. The code is role-bound but is not yet tied to a pre-existing roster record, so the school must verify who receives it.
+
+Successful enrollment creates an opaque, random session token. SQLite stores only its SHA-256 hash; the browser receives it in an HttpOnly, SameSite=Strict cookie that expires after seven days. The cookie is marked Secure in Vapor's production environment. `/api/me` and `/api/logout` require a valid session.
+
+The Phase 5 prototype now persists class membership and teacher-class-subject assignments. Student APIs derive the student from the session and restrict records to that identity. Teacher reads and writes are checked against assigned classes and subjects in storage. Principal and vice-principal roles have school-wide read access; vice-principals cannot alter academic marks, assignments, or chapter coverage, and only principals can publish school-wide notices. Assignments, school-test marks, notices, chapter coverage, student doubts, teacher responses, and diagnostic attempts are persisted by the school API.
+
+Enrollment codes are not roster-bound, so the school must verify the intended recipient out of band. Sessions have no renewal or account recovery. The deployment is single-school SQLite, with no tenant isolation, sync idempotency/conflict system, rate limiting, request IDs, detailed audit retention, or production reverse-proxy/TLS configuration. `NidanContentServer` is a separate static file process and is not an authenticated content gateway. The services bind to loopback by default. Do not enter real student records or expose the services directly to an untrusted network; classroom-LAN use still requires school-managed TLS/network controls and privacy approval.
+
 ---
 
 ## Offline Security

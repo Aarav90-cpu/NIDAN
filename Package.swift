@@ -15,14 +15,14 @@ let package = Package(
         .library(name: "NidanStorage", targets: ["NidanStorage"]),
         .library(name: "NidanSync", targets: ["NidanSync"]),
         .library(name: "NidanNetworking", targets: ["NidanNetworking"]),
-        .library(name: "NidanUI", targets: ["NidanUI"]),
-        .executable(name: "NidanApp", targets: ["NidanApp"])
+        .executable(name: "NidanApp", targets: ["NidanApp"]),
+        .executable(name: "NidanContentServer", targets: ["NidanContentServer"])
     ],
     dependencies: [
         // Robust SQLite wrapper
         .package(url: "https://github.com/groue/GRDB.swift.git", "7.0.0" ..< "7.11.0"),
-        // SwiftCrossUI for the frontend
-        .package(url: "https://github.com/stackotter/swift-cross-ui", branch: "main")
+        // Vapor for local web server backend
+        .package(url: "https://github.com/vapor/vapor.git", from: "4.89.0")
     ],
     targets: [
         // Domain Models
@@ -45,16 +45,16 @@ let package = Package(
         .target(name: "NidanNetworking", dependencies: ["NidanModels", "NidanCore"], path: "Packages/NidanNetworking/Sources"),
         .target(name: "NidanSync", dependencies: ["NidanModels", "NidanCore", "NidanNetworking", "NidanStorage"], path: "Packages/NidanSync/Sources"),
         
-        // UI Layer (Strict separation from Core)
-        .target(name: "NidanUI", dependencies: [
-            "NidanCore", 
-            "NidanLearning", 
-            "NidanAssessment", 
-            "NidanAssignments",
-            .product(name: "SwiftCrossUI", package: "swift-cross-ui")
-        ], path: "Packages/NidanUI/Sources"),
-        
         // App Executable (Integration / Entry Point)
-        .executableTarget(name: "NidanApp", dependencies: ["NidanCore", "NidanModels", "NidanStorage", "NidanUI"], path: "Packages/NidanApp/Sources")
+        .executableTarget(name: "NidanApp", dependencies: [
+            "NidanCore", 
+            "NidanModels", 
+            "NidanStorage",
+            .product(name: "Vapor", package: "vapor")
+        ], path: "Packages/NidanApp/Sources"),
+        .executableTarget(name: "NidanContentServer", dependencies: [
+            .product(name: "Vapor", package: "vapor")
+        ], path: "Packages/NidanContentServer/Sources"),
+        .testTarget(name: "NidanStorageTests", dependencies: ["NidanStorage", "NidanModels"], path: "Packages/NidanStorage/Tests")
     ]
 )

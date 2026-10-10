@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Welcome to NIDAN</title>
+    <link rel="stylesheet" href="/src/style.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Symbols+Outlined" rel="stylesheet">
+    <style>
+      body {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+        background-color: var(--background);
+        margin: 0;
+      }
+      .onboarding-card {
+        background: var(--surface);
+        padding: 2.5rem;
+        border-radius: 24px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        width: 100%;
+        max-width: 500px;
+        text-align: center;
+      }
+      .logo {
+        color: var(--primary);
+        font-size: 3rem;
+        margin-bottom: 1rem;
+      }
+      h1 {
+        margin: 0 0 0.5rem 0;
+        font-size: 2rem;
+        color: var(--text-primary);
+      }
+      p.subtitle {
+        color: var(--text-secondary);
+        margin-bottom: 2rem;
+      }
+      .role-selector {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1rem;
+        margin-bottom: 2rem;
+      }
+      .role-card {
+        flex: 1 1 calc(50% - 1rem);
+        padding: 1.5rem;
+        border: 2px solid var(--card-border);
+        border-radius: 16px;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 0.5rem;
+      }
+      .role-card:hover {
+        border-color: var(--primary);
+        background: rgba(46, 125, 50, 0.05);
+      }
+      .role-card.selected {
+        border-color: var(--primary);
+        background: rgba(46, 125, 50, 0.1);
+      }
+      .role-card md-icon {
+        font-size: 2.5rem;
+        color: var(--primary);
+      }
+      .form-group {
+        display: flex;
+        flex-direction: column;
+        text-align: left;
+        margin-bottom: 1rem;
+        gap: 0.5rem;
+      }
+      .form-group label {
+        font-weight: 500;
+        color: var(--text-primary);
+        font-size: 0.9rem;
+      }
+      .form-group input, .form-group select {
+        padding: 0.75rem 1rem;
+        border-radius: 8px;
+        border: 1px solid var(--card-border);
+        font-size: 1rem;
+        font-family: inherit;
+        outline: none;
+      }
+      .form-group input:focus, .form-group select:focus {
+        border-color: var(--primary);
+      }
+      .form-section {
+        display: none;
+        animation: fadeUp 0.3s ease;
+      }
+      .form-section.active {
+        display: block;
+      }
+      .submit-btn {
+        width: 100%;
+        margin-top: 1.5rem;
+        --md-filled-button-container-color: var(--primary);
+      }
+    </style>
+  </head>
+  <body class="light-theme">
+    
+    <div class="onboarding-card">
+      <md-icon class="logo">school</md-icon>
+      <h1>Welcome to NIDAN</h1>
+      <p class="subtitle">Please configure this device.</p>
+      
+      <div id="step-1">
+        <h3 style="text-align: left; margin-bottom: 1rem;">I am a...</h3>
+        <div class="role-selector">
+          <div class="role-card" onclick="selectRole('student')" id="role-student">
+            <md-icon>face</md-icon>
+            <strong>Student</strong>
+          </div>
+          <div class="role-card" onclick="selectRole('teacher')" id="role-teacher">
+            <md-icon>history_edu</md-icon>
+            <strong>Teacher</strong>
+          </div>
+          <div class="role-card" onclick="selectRole('vicePrincipal')" id="role-vicePrincipal">
+            <md-icon>supervisor_account</md-icon>
+            <strong>Vice-principal</strong>
+          </div>
+          <div class="role-card" onclick="selectRole('principal')" id="role-principal">
+            <md-icon>account_balance</md-icon>
+            <strong>Principal</strong>
+          </div>
+        </div>
+      </div>
+
+      <div id="step-2" class="form-section">
+        <!-- Forms injected by JS -->
+      </div>
+      
+      <md-filled-button class="submit-btn" id="next-btn" disabled>Continue</md-filled-button>
+    </div>
+
+    <script type="module" src="/src/onboarding.ts"></script>
+  </body>
+</html>

@@ -12,6 +12,12 @@ The primary objective of V1 is to build a convincing, measurable education proto
   - Teacher dashboard for classroom progress.
   - Student dashboard for individual progress.
 
+## Current Implementation Status
+
+The repository contains a local SQLite/Vapor prototype with role-bound enrollment codes, sessions, a Grade 9 Number Systems diagnostic, student/teacher/vice-principal/principal views, class-scoped assignments and paper hand-ins, school marks, chapter coverage, notices, and a teacher doubt queue. A separate static content-serving executable is present.
+
+This does not mean Phase 5 is complete. Device-side offline storage and sync retry/conflict handling, roster-verified identity, PostgreSQL deployment, production operations, and real school authorization/privacy review remain incomplete. The current demo records are synthetic and opt-in.
+
 ## V2 Scope (Expansion & Stabilization)
 - **Platforms:** Expansion to Android (Kotlin) for broader accessibility.
 - **Networking:** Introduction of WebSocket for real-time communication in connected environments.

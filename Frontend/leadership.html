@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>School Overview | NIDAN</title>
+    <link rel="stylesheet" href="/src/style.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Symbols+Outlined" rel="stylesheet">
+    <style>
+      .school-page { max-width: 1440px; }
+      .school-section { margin-bottom: 1.5rem; }
+      .school-section h2 { margin-bottom: 1rem; }
+      .school-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1rem; }
+      .school-item { padding: 1rem 0; border-bottom: 1px solid var(--card-border); }
+      .school-item:last-child { border-bottom: 0; }
+      .school-item h3 { font-size: 1rem; margin-bottom: .35rem; }
+      .school-item p, .school-meta { color: var(--text-secondary); line-height: 1.5; }
+      .school-form { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: .8rem; align-items: end; }
+      .school-form label { display: grid; gap: .35rem; color: var(--text-secondary); font-size: .9rem; }
+      .school-form input, .school-form textarea, .school-form select { width: 100%; min-height: 42px; padding: .65rem .75rem; border: 1px solid #b7c4d1; border-radius: 6px; background: white; color: var(--text-primary); font: inherit; }
+      .school-form textarea { min-height: 82px; resize: vertical; }
+      .form-wide { grid-column: 1 / -1; }
+      .school-form button { min-height: 42px; }
+      .status-message { min-height: 1.5rem; color: var(--text-secondary); }
+      .class-card { border-top: 3px solid #00796b; }
+      .class-roster { columns: 2; padding-left: 1.2rem; color: var(--text-secondary); }
+      @media (max-width: 640px) { #app { padding: 1rem; } .top-bar { padding: 1rem; } .class-roster { columns: 1; } }
+    </style>
+  </head>
+  <body class="light-theme">
+    <div id="app" class="school-page" data-workspace="leadership">
+      <header class="top-bar">
+        <div class="greeting"><h1>School Overview</h1><p id="workspace-greeting">Loading school data...</p></div>
+        <div class="actions"><span id="connection-state" class="offline-indicator">Connecting</span><md-outlined-button id="logout-btn">Sign out</md-outlined-button></div>
+      </header>
+      <main>
+        <section class="card school-section"><div class="card-header"><h2>Class Performance and Coverage</h2></div><div id="class-list" class="school-grid"></div></section>
+        <section class="card school-section"><div class="card-header"><h2>Teacher Assignments and Recorded Activity</h2></div><div id="staff-list" class="school-grid"></div></section>
+            <section class="card school-section" id="provisioning-section"><div class="card-header"><h2>Provision a School Account</h2></div>
+              <form id="enrollment-form" class="school-form">
+                <label>Account role<select name="role" required>
+                  <option value="student">Student</option><option value="teacher">Teacher</option>
+                  <option value="vicePrincipal">Vice-principal</option><option value="principal">Principal</option>
+                </select></label>
+                <label id="enrollment-classes-field">Approved classes<input name="classes" placeholder="9A, 9B"></label>
+                <label id="enrollment-subjects-field">Approved subjects<input name="subjects" placeholder="Mathematics, Science"></label>
+                <button type="submit">Issue one-time code</button>
+                <p class="status-message form-wide" aria-live="polite"></p>
+              </form>
+              <div id="issued-code" hidden></div>
+            </section>
+        <div class="dashboard-grid">
+          <div class="primary-column">
+            <section class="card school-section"><div class="card-header"><h2>Assignments and Completion</h2></div><div id="assignment-list"></div></section>
+            <section class="card school-section"><div class="card-header"><h2>Open Student Doubts</h2></div><div id="doubt-list"></div></section>
+            <section class="card school-section"><div class="card-header"><h2>Recent Marks</h2></div><div id="mark-list"></div></section>
+          </div>
+          <div class="secondary-column">
+            <section class="card school-section"><div class="card-header"><h2>Publish Notice</h2></div><form id="notice-form" class="school-form">
+              <label>Audience<select name="classId" required></select></label><label>Title<input name="title" required maxlength="160"></label>
+              <label class="form-wide">Notice<textarea name="body" required maxlength="4000"></textarea></label>
+              <button type="submit">Publish notice</button><p class="status-message form-wide" aria-live="polite"></p>
+            </form><div id="notice-list"></div></section>
+            <section class="card school-section"><div class="card-header"><h2>Assign Class Worksheet</h2></div><form id="assignment-form" class="school-form">
+              <label>Class<select name="classId" required></select></label><label>Subject<input name="subject" required maxlength="60"></label>
+              <label>Title<input name="title" required maxlength="160"></label><label>Chapter<input name="chapter" maxlength="160"></label>
+              <label>Due at<input name="dueAt" type="datetime-local" required></label>
+              <label class="form-wide">Paper instructions<textarea name="instructions" required maxlength="4000"></textarea></label>
+              <button type="submit">Assign worksheet</button><p class="status-message form-wide" aria-live="polite"></p>
+            </form></section>
+            <section class="card school-section"><div class="card-header"><h2>Record a School Test Mark</h2></div><form id="mark-form" class="school-form">
+              <label>Student<select name="student" required></select></label><label>Subject<input name="subject" required maxlength="60"></label>
+              <label>Assessment<input name="assessmentTitle" required maxlength="160"></label><label>Mark<input name="mark" type="number" min="0" required></label>
+              <label>Maximum mark<input name="maximumMark" type="number" min="1" max="1000" value="20" required></label>
+              <button type="submit">Save mark</button><p class="status-message form-wide" aria-live="polite"></p>
+            </form></section>
+            <section class="card school-section"><div class="card-header"><h2>Chapter Coverage</h2></div><form id="chapter-form" class="school-form">
+              <label>Class<select name="classId" required></select></label><label>Subject<input name="subject" required maxlength="60"></label>
+              <label>Chapter<input name="chapter" required maxlength="160"></label><label>Completion %<input name="completionPercent" type="number" min="0" max="100" required></label>
+              <button type="submit">Update coverage</button><p class="status-message form-wide" aria-live="polite"></p>
+            </form><div id="chapter-list"></div></section>
+          </div>
+        </div>
+      </main>
+    </div>
+    <script type="module" src="/src/school.ts"></script>
+  </body>
+</html>

@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>NIDAN Assignments</title>
+    <link rel="stylesheet" href="/src/style.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Symbols+Outlined" rel="stylesheet">
+  </head>
+  <body class="light-theme">
+    <div id="app">
+      <header class="top-bar">
+        <div class="greeting" style="display: flex; align-items: center; gap: 1rem;">
+          <md-icon-button onclick="window.location.href='/'">
+            <span class="material-symbols-outlined">arrow_back</span>
+          </md-icon-button>
+          <div>
+            <h1>Assignments</h1>
+            <p>Your pending and completed coursework.</p>
+          </div>
+        </div>
+      </header>
+
+      <main class="dashboard-grid">
+        
+        <!-- Left: List of Assignments -->
+        <div class="primary-column" style="flex: 1;">
+          <section class="card">
+            <div class="card-header">
+              <h2>To Do</h2>
+            </div>
+            <md-list id="assignment-list">
+              <!-- Dynamically populated -->
+            </md-list>
+          </section>
+        </div>
+
+        <!-- Right: Assignment Details & Submission -->
+        <div class="secondary-column" style="flex: 2;">
+          
+          <!-- State: Select an assignment -->
+          <section id="view-empty" class="card text-center" style="display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 400px;">
+             <md-icon class="large-icon" style="color: var(--text-secondary); font-size: 5rem;">assignment</md-icon>
+             <h3 style="color: var(--text-secondary); margin-top: 1rem;">Select an assignment to begin</h3>
+          </section>
+
+          <!-- State: Details & Submission -->
+          <section id="view-active" class="card" style="display: none; min-height: 400px;">
+            <div class="card-header">
+              <h2 id="active-title">Assignment Title</h2>
+              <span id="active-due" class="urgent" style="font-size: 0.9rem;">Due Date</span>
+            </div>
+            
+            <div class="card-body">
+              <div id="active-description" style="margin-bottom: 2rem; color: var(--text-secondary); line-height: 1.6;">
+                Assignment description goes here.
+              </div>
+              
+              <!-- Submission Area -->
+              <div id="submission-area" style="background: rgba(255,255,255,0.6); padding: 1.5rem; border-radius: 12px; border: 1px solid var(--card-border);">
+                 <h4 style="margin-bottom: 1rem; color: var(--text-primary);">Paper Worksheet</h4>
+                 <p>Complete this worksheet on paper and hand it to your teacher in class. Use this action only after you have submitted the paper.</p>
+                 <div class="card-actions justify-end" style="margin-top: 1.5rem;">
+                   <md-filled-button id="submit-btn">I handed it in</md-filled-button>
+                 </div>
+              </div>
+              
+              <!-- Result Area -->
+              <div id="result-area" style="display: none; padding: 1.5rem; border-radius: 12px;">
+                 <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem;">
+                    <md-icon id="result-icon" style="font-size: 2.5rem;"></md-icon>
+                    <div>
+                      <h3 id="result-title" style="margin: 0; font-size: 1.5rem;"></h3>
+                      <p id="result-score" style="margin: 0; color: var(--text-secondary);"></p>
+                    </div>
+                 </div>
+                 <p id="result-feedback" style="line-height: 1.5; color: var(--text-primary); margin-bottom: 1.5rem;"></p>
+                 
+                 <div class="card-actions justify-end"></div>
+              </div>
+
+            </div>
+          </section>
+
+        </div>
+      </main>
+    </div>
+    <script type="module" src="/src/assignments.ts"></script>
+  </body>
+</html>

@@ -20,3 +20,18 @@ OS/*.files
 OS/*.contents
 OS/*.packages
 OS/binary.modified_timestamps
+
+# IDEs
+.vscode/
+
+# Database
+nidan.sqlite
+nidan.sqlite-wal
+nidan.sqlite-shm
+*.db
+
+# Node / Frontend
+Frontend/node_modules/
+Frontend/dist/
+Frontend/.vite/
+

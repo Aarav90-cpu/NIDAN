@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>NIDAN Student Dashboard</title>
+    <link rel="stylesheet" href="/src/style.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Symbols+Outlined" rel="stylesheet">
+  </head>
+  <body class="light-theme">
+    <div id="app">
+      
+      <!-- Top App Bar -->
+      <header class="top-bar">
+        <div class="greeting">
+            <h1 id="greeting-text">Your learning dashboard</h1>
+          <p id="date-text">Ready to continue learning?</p>
+        </div>
+        <div class="actions">
+          <div class="offline-indicator" id="offline-indicator">
+            <span class="material-symbols-outlined">sync</span>
+            Checking local server
+          </div>
+          <md-icon-button class="action-btn" data-message="No new notifications.">
+            <span class="material-symbols-outlined">notifications</span>
+          </md-icon-button>
+          <md-icon-button onclick="window.location.href='/settings.html'" class="action-btn" data-message="Opening Settings...">
+            <span class="material-symbols-outlined">settings</span>
+          </md-icon-button>
+          <div class="avatar action-btn" data-message="Opening User Profile...">A</div>
+        </div>
+      </header>
+
+      <!-- Main Layout Grid -->
+      <main class="dashboard-grid">
+        
+        <!-- Left Column: Primary Focus -->
+        <div class="primary-column">
+          
+          <!-- Diagnostic Promo Card -->
+          <section class="card primary-card">
+            <div class="card-header">
+              <h2>Initial Setup</h2>
+              <md-icon-button class="action-btn" data-message="More options for setup.">
+                <span class="material-symbols-outlined">more_vert</span>
+              </md-icon-button>
+            </div>
+            <div class="card-body">
+              <h3>Number Systems Check</h3>
+              <p>This short Grade 9 Number Systems sample records how you answered these questions. It is not an IQ test or a complete measure of your ability.</p>
+              
+              <div class="progress-section">
+                <div class="progress-labels">
+                  <span>Diagnostic Progress</span>
+                  <span>0%</span>
+                </div>
+                <md-linear-progress value="0"></md-linear-progress>
+              </div>
+            </div>
+            <div class="card-actions">
+              <md-filled-button onclick="window.location.href='/diagnostic.html'">Start Diagnostic</md-filled-button>
+            </div>
+          </section>
+
+          <!-- Today's Learning & Recommendations -->
+          <section class="card recommendations-card">
+            <div class="card-header">
+              <h2>Today's Recommendations</h2>
+            </div>
+            <div class="list-container">
+              <p id="recommendation-state">No recommendation is available yet. Complete the Number Systems check to start a recorded learning history.</p>
+            </div>
+          </section>
+
+          <!-- Offline Library Promo Card -->
+          <section class="card" style="cursor: pointer; transition: transform 0.2s ease, box-shadow 0.2s ease;" onclick="window.location.href='/library.html'" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='var(--card-shadow-hover)';" onmouseout="this.style.transform='none'; this.style.boxShadow='var(--card-shadow)';">
+            <div class="card-header" style="display: flex; justify-content: space-between; align-items: center;">
+              <h2 style="margin: 0;">Offline Library</h2>
+              <md-icon style="color: var(--primary);">library_books</md-icon>
+            </div>
+            <div class="card-body">
+              <p style="margin: 0.5rem 0 0 0; color: var(--text-secondary);">School-approved books, notes, and media will appear here after the school installs them.</p>
+            </div>
+          </section>
+
+        </div>
+
+        <!-- Right Column: Secondary Info -->
+        <div class="secondary-column">
+          
+          <!-- Roadmap Promo Card -->
+          <section class="card" style="cursor: pointer; transition: transform 0.2s ease, box-shadow 0.2s ease; margin-bottom: 2rem;" onclick="window.location.href='/roadmap.html'" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='var(--card-shadow-hover)';" onmouseout="this.style.transform='none'; this.style.boxShadow='var(--card-shadow)';">
+            <div class="card-header" style="display: flex; justify-content: space-between; align-items: center;">
+              <h2 style="margin: 0;">Your Roadmap</h2>
+              <md-icon style="color: var(--primary);">explore</md-icon>
+            </div>
+            <div class="card-body">
+              <p style="margin: 0.5rem 0 0 0; color: var(--text-secondary);">See what you know, what you're learning, and where you're going next.</p>
+            </div>
+          </section>
+
+          <!-- Progress Summary Card -->
+          <section class="card summary-card" style="cursor: pointer; transition: transform 0.2s ease, box-shadow 0.2s ease;" onclick="window.location.href='/progress.html'" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='var(--card-shadow-hover)';" onmouseout="this.style.transform='none'; this.style.boxShadow='var(--card-shadow)';">
+            <div class="card-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+              <h2 style="margin: 0;">Weekly Progress</h2>
+              <md-icon>chevron_right</md-icon>
+            </div>
+            <div class="stats-grid">
+              <div class="stat-box">
+                <md-icon>school</md-icon>
+                <div class="stat-value" id="latest-diagnostic-score">--</div>
+                <div class="stat-label">Latest Number Systems score</div>
+              </div>
+              <div class="stat-box">
+                <md-icon>schedule</md-icon>
+                <div class="stat-value" id="diagnostic-attempt-count">0</div>
+                <div class="stat-label">Diagnostic attempts saved</div>
+              </div>
+            </div>
+          </section>
+
+          <!-- Pending Assignments Card -->
+          <section class="card assignments-card">
+            <div class="card-header">
+              <h2>Pending Assignments</h2>
+              <md-badge id="assignment-count" value="0"></md-badge>
+            </div>
+              <md-list id="student-assignment-list"></md-list>
+          </section>
+
+          <section class="card" id="school-record-card">
+            <div class="card-header"><h2>School Record</h2></div>
+            <p id="student-class-list">Loading your classes...</p>
+            <div id="student-notices"></div>
+            <div id="student-marks"></div>
+            <h3 style="margin-top: 1.5rem; margin-bottom: 1rem;">Ask a teacher</h3>
+            <form id="student-doubt-form" class="school-form" style="display: flex; flex-direction: column; gap: 1rem;">
+              <md-outlined-select name="classId" label="Class" required></md-outlined-select>
+              <md-outlined-text-field name="subject" label="Subject" maxlength="60" required></md-outlined-text-field>
+              <md-outlined-text-field name="topic" label="Topic" maxlength="120" required></md-outlined-text-field>
+              <md-outlined-text-field type="textarea" rows="4" name="message" label="Your question" maxlength="2000" required></md-outlined-text-field>
+              <div style="display: flex; justify-content: flex-end; margin-top: 0.5rem;">
+                <md-filled-button type="submit">
+                  Send question to teacher
+                  <md-icon slot="icon">send</md-icon>
+                </md-filled-button>
+              </div>
+              <p class="status-message" aria-live="polite"></p>
+            </form>
+            <div id="student-doubts"></div>
+          </section>
+
+        </div>
+      </main>
+
+      <!-- Global Action Dialog -->
+      <md-dialog id="action-dialog">
+        <div slot="headline" id="dialog-headline">Action</div>
+        <form slot="content" id="dialog-form" method="dialog">
+          <div id="dialog-content">This feature will be implemented in Phase 4.</div>
+        </form>
+        <div slot="actions">
+          <md-text-button form="dialog-form">Close</md-text-button>
+        </div>
+      </md-dialog>
+
+    </div>
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>
