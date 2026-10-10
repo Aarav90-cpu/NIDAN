@@ -1,0 +1,17 @@
+[Unit]
+Description=NIDAN Core Engine
+After=systemd-user-sessions.service plymouth-quit-wait.service
+Conflicts=getty@tty1.service
+
+[Service]
+ExecStart=/usr/local/bin/nidan
+Type=idle
+User=root
+StandardInput=tty
+StandardOutput=tty
+TTYPath=/dev/tty1
+Restart=always
+RestartSec=1
+
+[Install]
+WantedBy=multi-user.target

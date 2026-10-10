@@ -1,0 +1,17 @@
+#!/bin/sh
+set -e
+
+echo "Securing GRUB bootloader..."
+# Replace timeout and add security
+if [ -f binary/boot/grub/grub.cfg ]; then
+    sed -i 's/set timeout=[0-9]*/set timeout=0\nset timeout_style=hidden\nset superusers="root"\npassword root locked\n/' binary/boot/grub/grub.cfg
+    sed -i 's/menuentry "Live system"/menuentry "NIDAN" --unrestricted/g' binary/boot/grub/grub.cfg
+    sed -i 's/menuentry "Debian GNU\/Linux Live"/menuentry "NIDAN" --unrestricted/g' binary/boot/grub/grub.cfg
+fi
+
+# Also secure syslinux (isolinux) if it's there
+if [ -f binary/isolinux/isolinux.cfg ]; then
+    sed -i 's/timeout [0-9]*/timeout 0/' binary/isolinux/isolinux.cfg
+    sed -i 's/prompt 1/prompt 0/' binary/isolinux/isolinux.cfg
+    sed -i 's/menu label Live system/menu label NIDAN/' binary/isolinux/txt.cfg 2>/dev/null || true
+fi

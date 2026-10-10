@@ -1,0 +1,8 @@
+#!/bin/sh
+set -e
+
+echo "Enabling NIDAN systemd service..."
+systemctl enable nidan.service
+
+# Mask the default getty on tty1 to avoid conflicts
+systemctl mask getty@tty1.service

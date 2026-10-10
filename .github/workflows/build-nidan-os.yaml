@@ -7,7 +7,7 @@ on:
 
 jobs:
   build-and-release:
-    # Running on an ARM64 runner machine
+    # Running on an ARM runner machine
     runs-on: ubuntu-24.04-arm
     permissions:
       contents: write
@@ -29,6 +29,26 @@ jobs:
         id: vars
         run: echo "sha_short=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
 
+      - name: Build NIDAN Swift App
+        run: |
+          echo "Compiling NidanApp for x86_64 with Musl and Mimalloc..."
+          docker run --rm --platform linux/amd64 -v "$(pwd)":/workspace -w /workspace swift:6.0 bash -c "\
+            apt-get update && apt-get install -y musl-tools cmake git curl && \
+            git clone --depth 1 https://github.com/microsoft/mimalloc.git && \
+            cd mimalloc && mkdir build && cd build && \
+            CC=musl-gcc cmake .. -DMI_BUILD_SHARED=OFF -DMI_BUILD_STATIC=ON && \
+            make -j\$(nproc) && cd ../.. && \
+            swift sdk install https://download.swift.org/swift-6.0.1-release/static-sdk/swift-6.0.1-RELEASE/swift-6.0.1-RELEASE_static-linux-0.0.1.artifactbundle.tar.gz && \
+            swift build -c release --product NidanApp --swift-sdk x86_64-swift-linux-musl \
+              -Xswiftc -static-executable \
+              -Xlinker -L\$(pwd)/mimalloc/build \
+              -Xlinker -lmimalloc"
+          cp .build/x86_64-swift-linux-musl/release/NidanApp NidanApp-x86_64
+          # Move into the live-build chroot includes so it becomes part of the OS
+          mkdir -p OS/config/includes.chroot/usr/local/bin
+          cp NidanApp-x86_64 OS/config/includes.chroot/usr/local/bin/nidan
+          chmod +x OS/config/includes.chroot/usr/local/bin/nidan
+
       - name: Build NIDAN Engine and Compile ISO
         run: |
           cd OS/
@@ -45,7 +65,8 @@ jobs:
           # --architectures amd64 tells live-build to configure an x86_64 OS
           docker run --privileged --rm --platform linux/amd64 -v "$(pwd)":/workspace nidan-builder lb config \
             --architectures amd64 \
-            --image-name nidan-x86_64
+            --image-name nidan-x86_64 \
+            --bootappend-live "boot=live components quiet splash loglevel=0 fastboot noautologin console=tty1"
           
           echo "Step 4: Compiling your NIDAN custom ISO via emulation..."
           docker run --privileged --rm --platform linux/amd64 -v "$(pwd)":/workspace nidan-builder lb build
@@ -67,22 +88,6 @@ jobs:
           
           echo "Standardized ISO Name: $FINAL_ISO"
           echo "iso_file=OS/$FINAL_ISO" >> $GITHUB_OUTPUT
-
-      - name: Build NIDAN Swift App
-        run: |
-          echo "Compiling NidanApp for x86_64 with Musl and Mimalloc..."
-          docker run --rm --platform linux/amd64 -v "$(pwd)":/workspace -w /workspace swift:6.0 bash -c "\
-            apt-get update && apt-get install -y musl-tools cmake git curl && \
-            git clone --depth 1 https://github.com/microsoft/mimalloc.git && \
-            cd mimalloc && mkdir build && cd build && \
-            CC=musl-gcc cmake .. -DMI_BUILD_SHARED=OFF -DMI_BUILD_STATIC=ON && \
-            make -j\$(nproc) && cd ../.. && \
-            swift sdk install https://download.swift.org/swift-6.0.1-release/static-sdk/swift-6.0.1-RELEASE/swift-6.0.1-RELEASE_static-linux-0.0.1.artifactbundle.tar.gz && \
-            swift build -c release --product NidanApp --swift-sdk x86_64-swift-linux-musl \
-              -Xswiftc -static-executable \
-              -Xlinker -L\$(pwd)/mimalloc/build \
-              -Xlinker -lmimalloc"
-          cp .build/x86_64-swift-linux-musl/release/NidanApp NidanApp-x86_64
 
       - name: Create GitHub Pre-Release
         uses: softprops/action-gh-release@v2
