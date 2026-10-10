@@ -29,16 +29,39 @@ jobs:
         id: vars
         run: echo "sha_short=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
 
+      - name: Cache live-build OS cache
+        uses: actions/cache@v4
+        with:
+          path: OS/cache
+          key: ${{ runner.os }}-live-build-${{ hashFiles('OS/config/package-lists/**') }}
+          restore-keys: |
+            ${{ runner.os }}-live-build-
+
+      - name: Cache Swift and Mimalloc
+        uses: actions/cache@v4
+        with:
+          path: |
+            .build
+            mimalloc
+          key: ${{ runner.os }}-swift-mimalloc-${{ hashFiles('Package.resolved') }}
+          restore-keys: |
+            ${{ runner.os }}-swift-mimalloc-
+
       - name: Build NIDAN Swift App
         run: |
           echo "Compiling NidanApp for x86_64 with Musl and Mimalloc..."
           docker run --rm --platform linux/amd64 -v "$(pwd)":/workspace -w /workspace swift:6.0 bash -c "\
             apt-get update && apt-get install -y musl-tools cmake git curl && \
-            git clone --depth 1 https://github.com/microsoft/mimalloc.git && \
-            cd mimalloc && mkdir build && cd build && \
-            CC=musl-gcc cmake .. -DMI_BUILD_SHARED=OFF -DMI_BUILD_STATIC=ON && \
-            make -j\$(nproc) && cd ../.. && \
-            swift sdk install https://download.swift.org/swift-6.0.1-release/static-sdk/swift-6.0.1-RELEASE/swift-6.0.1-RELEASE_static-linux-0.0.1.artifactbundle.tar.gz && \
+            if [ ! -d 'mimalloc/build' ]; then \
+              git clone --depth 1 https://github.com/microsoft/mimalloc.git && \
+              cd mimalloc && mkdir build && cd build && \
+              CC=musl-gcc cmake .. -DMI_BUILD_SHARED=OFF -DMI_BUILD_STATIC=ON && \
+              make -j\$(nproc) && cd ../..; \
+            else \
+              echo 'Mimalloc already built, skipping...'; \
+            fi && \
+            curl -LO https://download.swift.org/swift-6.0.1-release/static-sdk/swift-6.0.1-RELEASE/swift-6.0.1-RELEASE_static-linux-0.0.1.artifactbundle.tar.gz && \
+            swift sdk install swift-6.0.1-RELEASE_static-linux-0.0.1.artifactbundle.tar.gz && \
             swift build -c release --product NidanApp --swift-sdk x86_64-swift-linux-musl \
               -Xswiftc -static-executable \
               -Xlinker -L\$(pwd)/mimalloc/build \
@@ -103,3 +126,7 @@ jobs:
           files: |
             ${{ steps.locate_iso.outputs.iso_file }}
             NidanApp-x86_64
+
+      - name: Fix permissions for Cache
+        if: always()
+        run: sudo chown -R $USER:$USER OS/cache .build mimalloc || true
