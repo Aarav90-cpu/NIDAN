@@ -44,9 +44,9 @@ jobs:
             .build
             mimalloc
             sqlite
-          key: ${{ runner.os }}-swift-mimalloc-${{ hashFiles('Package.resolved') }}
+          key: ${{ runner.os }}-swift-mimalloc-v2-${{ hashFiles('Package.resolved') }}
           restore-keys: |
-            ${{ runner.os }}-swift-mimalloc-
+            ${{ runner.os }}-swift-mimalloc-v2-
 
       - name: Build NIDAN Swift App
         run: |
@@ -57,7 +57,7 @@ jobs:
               git clone --depth 1 https://github.com/microsoft/mimalloc.git && \
               cd mimalloc && mkdir build && cd build && \
               CC=musl-gcc cmake .. -DMI_BUILD_SHARED=OFF -DMI_BUILD_STATIC=ON && \
-              make -j2 && cd ../..; \
+              make && cd ../..; \
             else \
               echo 'Mimalloc already built, skipping...'; \
             fi && \
@@ -66,14 +66,14 @@ jobs:
               curl -LO https://sqlite.org/2024/sqlite-amalgamation-3450300.zip && \
               unzip sqlite-amalgamation-3450300.zip && \
               cd sqlite-amalgamation-3450300 && \
-              musl-gcc -O3 -c sqlite3.c && \
+              musl-gcc -O3 -DSQLITE_ENABLE_SNAPSHOT=1 -DSQLITE_ENABLE_FTS5=1 -DSQLITE_ENABLE_PREUPDATE_HOOK=1 -DSQLITE_ENABLE_SESSION=1 -DSQLITE_ENABLE_RTREE=1 -DSQLITE_ENABLE_MATH_FUNCTIONS=1 -c sqlite3.c && \
               ar rcs libsqlite3.a sqlite3.o && cd ../../..; \
             else \
               echo 'SQLite already built, skipping...'; \
             fi && \
             curl -LO https://download.swift.org/swift-6.0.1-release/static-sdk/swift-6.0.1-RELEASE/swift-6.0.1-RELEASE_static-linux-0.0.1.artifactbundle.tar.gz && \
             swift sdk install swift-6.0.1-RELEASE_static-linux-0.0.1.artifactbundle.tar.gz && \
-            swift build -c release --product NidanApp --swift-sdk x86_64-swift-linux-musl --jobs 1 \
+            swift build -c release --product NidanApp --swift-sdk x86_64-swift-linux-musl \
               -Xswiftc -static-executable \
               -Xcc -I\$(pwd)/sqlite/build/sqlite-amalgamation-3450300 \
               -Xlinker -L\$(pwd)/sqlite/build/sqlite-amalgamation-3450300 \
