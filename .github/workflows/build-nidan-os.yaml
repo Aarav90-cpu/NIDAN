@@ -57,7 +57,7 @@ jobs:
               git clone --depth 1 https://github.com/microsoft/mimalloc.git && \
               cd mimalloc && mkdir build && cd build && \
               CC=musl-gcc cmake .. -DMI_BUILD_SHARED=OFF -DMI_BUILD_STATIC=ON && \
-              make -j\$(nproc) && cd ../..; \
+              make -j2 && cd ../..; \
             else \
               echo 'Mimalloc already built, skipping...'; \
             fi && \
@@ -73,7 +73,7 @@ jobs:
             fi && \
             curl -LO https://download.swift.org/swift-6.0.1-release/static-sdk/swift-6.0.1-RELEASE/swift-6.0.1-RELEASE_static-linux-0.0.1.artifactbundle.tar.gz && \
             swift sdk install swift-6.0.1-RELEASE_static-linux-0.0.1.artifactbundle.tar.gz && \
-            swift build -c release --product NidanApp --swift-sdk x86_64-swift-linux-musl \
+            swift build -c release --product NidanApp --swift-sdk x86_64-swift-linux-musl --jobs 1 \
               -Xswiftc -static-executable \
               -Xcc -I\$(pwd)/sqlite/build/sqlite-amalgamation-3450300 \
               -Xlinker -L\$(pwd)/sqlite/build/sqlite-amalgamation-3450300 \
