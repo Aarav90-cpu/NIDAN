@@ -20,7 +20,7 @@ let package = Package(
     ],
     dependencies: [
         // Robust SQLite wrapper
-        .package(url: "https://github.com/groue/GRDB.swift.git", from: "7.0.0")
+        .package(url: "https://github.com/groue/GRDB.swift.git", "7.0.0" ..< "7.11.0")
     ],
     targets: [
         // Domain Models
