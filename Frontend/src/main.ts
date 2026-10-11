@@ -22,14 +22,15 @@ import '@material/web/select/select-option.js';
 async function checkRegistration() {
   try {
     const res = await fetch('/api/me');
-    if (res.status === 401 || res.status === 404) {
-      window.location.href = '/onboarding.html';
+    if (res.status === 401) {
+      window.location.href = './onboarding.html';
     } else if (res.ok) {
       const user = await res.json();
-      if (user.role === 'teacher' && window.location.pathname === '/') {
-        window.location.href = '/teacher.html';
-      } else if ((user.role === 'principal' || user.role === 'vicePrincipal') && window.location.pathname === '/') {
-        window.location.href = '/leadership.html';
+      const isHome = window.location.pathname === '/' || window.location.pathname.endsWith('/index.html');
+      if (user.role === 'teacher' && isHome) {
+        window.location.href = './teacher.html';
+      } else if ((user.role === 'principal' || user.role === 'vicePrincipal') && isHome) {
+        window.location.href = './leadership.html';
       } else if (user.role === 'student') {
         void loadStudentSchoolData();
       }

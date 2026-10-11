@@ -4,6 +4,7 @@ import { resolve } from 'node:path';
 const frontendDirectory = import.meta.dirname;
 
 export default defineConfig({
+  base: './',
   build: {
     rollupOptions: {
       input: {

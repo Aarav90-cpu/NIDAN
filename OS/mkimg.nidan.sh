@@ -6,7 +6,7 @@ profile_nidan() {
     image_ext="iso"
     arch="x86_64"
     output_format="iso"
-    kernel_cmdline="modules=loop,squashfs,sd-mod,usb-storage quiet loglevel=0 console=tty1 vt.global_cursor_default=0"
+    kernel_cmdline="modules=loop,squashfs,sd-mod,usb-storage rootflags=size=100% quiet loglevel=0 console=tty1 vt.global_cursor_default=0"
     syslinux_serial=""
     syslinux_timeout=1
     syslinux_prompt=0
@@ -16,6 +16,7 @@ profile_nidan() {
     apks="$apks
         alpine-base
         busybox
+        busybox-extras
         openrc
         eudev
         udev-init-scripts
@@ -29,11 +30,21 @@ profile_nidan() {
         alsa-utils
         sqlite
         gcompat
-        cage
-        seatd
-        seatd-openrc
-        chromium
-        mesa-dri-gallium
+        xorg-server
+        xf86-video-modesetting
+        xf86-video-fbdev
+        xf86-input-libinput
+        xinit
+        dbus
+        dbus-x11
+        xfce4
+        xfwm4-themes
+        adw-gtk3
+        adwaita-icon-theme
+        adwaita-xfce-icon-theme
         font-dejavu
+        mesa-dri-gallium
+        chromium
+        libreoffice
     "
 }

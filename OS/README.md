@@ -74,7 +74,7 @@ To test the generated ISO in a virtual machine using QEMU:
 qemu-system-x86_64 \
   -enable-kvm \
   -cpu host \
-  -m 2G \
+  -m 4G \
   -smp 2 \
   -vga virtio \
   -cdrom OS/output/alpine-nidan-261011-x86_64.iso \
@@ -83,11 +83,44 @@ qemu-system-x86_64 \
 ```
 
 ### VM Interaction Notes
+- **RAM Allocation:** `-m 4G` is required for live ISO diskless testing because the entire operating system, XFCE desktop, LibreOffice, and Chromium are uncompressed into an in-memory `tmpfs` root filesystem during boot. Allocating less than 4 GB in diskless mode causes `No space left on device` during package extraction.
 - **Hardware Acceleration:** `-enable-kvm -cpu host` provides native CPU performance. Omit these flags if KVM is not supported on your host.
-- **Display Driver:** `-vga virtio` provides the VirtIO DRM/KMS graphics device required by the Wayland kiosk compositor (`cage`).
-- **RAM Allocation:** `-m 2G` ensures sufficient RAM for the in-memory root filesystem and the Chromium browser.
+- **Display Driver:** `-vga virtio` provides the VirtIO graphics device for the XFCE desktop and Xorg server.
 - **Port Forwarding:** `hostfwd=tcp::8080-:8080` allows accessing the running `NidanApp` web interface from your host browser at `http://localhost:8080`.
-- **Virtual Terminals:** The graphical kiosk runs on `tty1`. Emergency text consoles are accessible via `Ctrl+Alt+F2` or `Ctrl+Alt+F3`.
+- **Desktop Environment:** The student desktop session runs on `tty1` featuring XFCE with pre-configured Adwaita-dark styling, autostarted NIDAN app, LibreOffice, and Chromium. Emergency text consoles are accessible via `Ctrl+Alt+F2` or `Ctrl+Alt+F3`.
+- **Student Lockdown:** Non-root student account with `/sbin/apk` execution restricted to prevent unauthorized package management.
+
+---
+
+## Persistent Expanding Disk Installation (Sys Mode)
+
+To run NIDAN as a permanent, persistent OS on a virtual drive or physical USB stick without consuming RAM for root storage:
+
+1. Create a 16 GB expanding virtual disk:
+   ```bash
+   qemu-img create -f qcow2 OS/output/nidan-disk.qcow2 16G
+   ```
+
+2. Boot the installer with the disk attached:
+   ```bash
+   qemu-system-x86_64 \
+     -enable-kvm -cpu host -m 2G -smp 2 -vga virtio \
+     -drive file=OS/output/nidan-disk.qcow2,format=qcow2 \
+     -cdrom OS/output/alpine-nidan-261011-x86_64.iso -boot d
+   ```
+
+3. Switch to console (`Ctrl+Alt+F2`), log in as `root`, and install to disk:
+   ```bash
+   setup-disk -m sys /dev/sda
+   ```
+
+4. Subsequent boots run directly from the persistent, expanding disk with low RAM consumption:
+   ```bash
+   qemu-system-x86_64 \
+     -enable-kvm -cpu host -m 2G -smp 2 -vga virtio \
+     -hda OS/output/nidan-disk.qcow2 \
+     -net nic -net user,hostfwd=tcp::8080-:8080
+   ```
 
 ---
 

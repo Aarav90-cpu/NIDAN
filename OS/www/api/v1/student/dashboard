@@ -1,0 +1,15 @@
+{
+  "name": "Student",
+  "classes": [
+    {
+      "id": "class-9a",
+      "name": "Grade 9-A"
+    }
+  ],
+  "assignments": [],
+  "notices": [],
+  "marks": [],
+  "doubts": [],
+  "diagnosticAttemptCount": 0,
+  "latestDiagnosticScore": null
+}

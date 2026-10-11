@@ -1,0 +1,17 @@
+[
+  {
+    "id": "q1",
+    "text": "Which of the following is an irrational number?",
+    "options": ["0.25", "√2", "3/4", "0.333..."]
+  },
+  {
+    "id": "q2",
+    "text": "What is the decimal expansion of 1/7?",
+    "options": ["Terminating", "Non-terminating repeating", "Non-terminating non-repeating", "Integer"]
+  },
+  {
+    "id": "q3",
+    "text": "Every rational number is a:",
+    "options": ["Natural number", "Whole number", "Real number", "Integer"]
+  }
+]

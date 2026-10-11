@@ -4,21 +4,20 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>NIDAN Student Dashboard</title>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/icon?family=Material+Symbols+Outlined" rel="stylesheet">
-    <script type="module" crossorigin src="/assets/main-BWhPT86N.js"></script>
-    <link rel="modulepreload" crossorigin href="/assets/icon-BclkLKie.js">
-    <link rel="modulepreload" crossorigin href="/assets/query-assigned-elements-q5zgKHUi.js">
-    <link rel="modulepreload" crossorigin href="/assets/icon-button-DCxda_7H.js">
-    <link rel="modulepreload" crossorigin href="/assets/list-item-pI0YJSf7.js">
-    <link rel="modulepreload" crossorigin href="/assets/query-assigned-nodes-DShrEso0.js">
-    <link rel="modulepreload" crossorigin href="/assets/elevation-CycicDXQ.js">
-    <link rel="modulepreload" crossorigin href="/assets/shared-styles.cssresult-BhpumRP2.js">
-    <link rel="modulepreload" crossorigin href="/assets/filled-button-CdBnqKPw.js">
-    <link rel="modulepreload" crossorigin href="/assets/outlined-button-5oDNlABC.js">
-    <link rel="modulepreload" crossorigin href="/assets/validator-DUy8tG3a.js">
-    <link rel="modulepreload" crossorigin href="/assets/divider-BfmU33SH.js">
-    <link rel="stylesheet" crossorigin href="/assets/icon-06tX8z_E.css">
+    <link rel="stylesheet" crossorigin href="./assets/fonts.css">
+    <script type="module" crossorigin src="./assets/main-BWhPT86N.js"></script>
+    <link rel="modulepreload" crossorigin href="./assets/icon-BclkLKie.js">
+    <link rel="modulepreload" crossorigin href="./assets/query-assigned-elements-q5zgKHUi.js">
+    <link rel="modulepreload" crossorigin href="./assets/icon-button-DCxda_7H.js">
+    <link rel="modulepreload" crossorigin href="./assets/list-item-pI0YJSf7.js">
+    <link rel="modulepreload" crossorigin href="./assets/query-assigned-nodes-DShrEso0.js">
+    <link rel="modulepreload" crossorigin href="./assets/elevation-CycicDXQ.js">
+    <link rel="modulepreload" crossorigin href="./assets/shared-styles.cssresult-BhpumRP2.js">
+    <link rel="modulepreload" crossorigin href="./assets/filled-button-CdBnqKPw.js">
+    <link rel="modulepreload" crossorigin href="./assets/outlined-button-5oDNlABC.js">
+    <link rel="modulepreload" crossorigin href="./assets/validator-DUy8tG3a.js">
+    <link rel="modulepreload" crossorigin href="./assets/divider-BfmU33SH.js">
+    <link rel="stylesheet" crossorigin href="./assets/icon-06tX8z_E.css">
   </head>
   <body class="light-theme">
     <div id="app">
@@ -37,7 +36,7 @@
           <md-icon-button class="action-btn" data-message="No new notifications.">
             <span class="material-symbols-outlined">notifications</span>
           </md-icon-button>
-          <md-icon-button onclick="window.location.href='/settings.html'" class="action-btn" data-message="Opening Settings...">
+          <md-icon-button onclick="window.location.href='./settings.html'" class="action-btn" data-message="Opening Settings...">
             <span class="material-symbols-outlined">settings</span>
           </md-icon-button>
           <div class="avatar action-btn" data-message="Opening User Profile...">A</div>
@@ -71,7 +70,7 @@
               </div>
             </div>
             <div class="card-actions">
-              <md-filled-button onclick="window.location.href='/diagnostic.html'">Start Diagnostic</md-filled-button>
+              <md-filled-button onclick="window.location.href='./diagnostic.html'">Start Diagnostic</md-filled-button>
             </div>
           </section>
 
@@ -86,7 +85,7 @@
           </section>
 
           <!-- Offline Library Promo Card -->
-          <section class="card" style="cursor: pointer; transition: transform 0.2s ease, box-shadow 0.2s ease;" onclick="window.location.href='/library.html'" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='var(--card-shadow-hover)';" onmouseout="this.style.transform='none'; this.style.boxShadow='var(--card-shadow)';">
+          <section class="card" style="cursor: pointer; transition: transform 0.2s ease, box-shadow 0.2s ease;" onclick="window.location.href='./library.html'" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='var(--card-shadow-hover)';" onmouseout="this.style.transform='none'; this.style.boxShadow='var(--card-shadow)';">
             <div class="card-header" style="display: flex; justify-content: space-between; align-items: center;">
               <h2 style="margin: 0;">Offline Library</h2>
               <md-icon style="color: var(--primary);">library_books</md-icon>
@@ -102,7 +101,7 @@
         <div class="secondary-column">
           
           <!-- Roadmap Promo Card -->
-          <section class="card" style="cursor: pointer; transition: transform 0.2s ease, box-shadow 0.2s ease; margin-bottom: 2rem;" onclick="window.location.href='/roadmap.html'" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='var(--card-shadow-hover)';" onmouseout="this.style.transform='none'; this.style.boxShadow='var(--card-shadow)';">
+          <section class="card" style="cursor: pointer; transition: transform 0.2s ease, box-shadow 0.2s ease; margin-bottom: 2rem;" onclick="window.location.href='./roadmap.html'" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='var(--card-shadow-hover)';" onmouseout="this.style.transform='none'; this.style.boxShadow='var(--card-shadow)';">
             <div class="card-header" style="display: flex; justify-content: space-between; align-items: center;">
               <h2 style="margin: 0;">Your Roadmap</h2>
               <md-icon style="color: var(--primary);">explore</md-icon>
@@ -113,7 +112,7 @@
           </section>
 
           <!-- Progress Summary Card -->
-          <section class="card summary-card" style="cursor: pointer; transition: transform 0.2s ease, box-shadow 0.2s ease;" onclick="window.location.href='/progress.html'" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='var(--card-shadow-hover)';" onmouseout="this.style.transform='none'; this.style.boxShadow='var(--card-shadow)';">
+          <section class="card summary-card" style="cursor: pointer; transition: transform 0.2s ease, box-shadow 0.2s ease;" onclick="window.location.href='./progress.html'" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='var(--card-shadow-hover)';" onmouseout="this.style.transform='none'; this.style.boxShadow='var(--card-shadow)';">
             <div class="card-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
               <h2 style="margin: 0;">Weekly Progress</h2>
               <md-icon>chevron_right</md-icon>

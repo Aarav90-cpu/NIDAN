@@ -25,11 +25,22 @@ rc_add() {
 
 tmp="$(mktemp -d)"
 trap cleanup EXIT
+chmod 0755 "$tmp"
 
-# 1. System Hostname
+# 1. System Hostname & Filesystem Table
 mkdir -p "$tmp"/etc
 makefile root:root 0644 "$tmp"/etc/hostname <<EOF
 $HOSTNAME
+EOF
+
+makefile root:root 0644 "$tmp"/etc/fstab <<EOF
+tmpfs / tmpfs defaults,size=90% 0 0
+shm /dev/shm tmpfs nodev,nosuid,noexec 0 0
+EOF
+
+makefile root:root 0644 "$tmp"/etc/hosts <<EOF
+127.0.0.1   localhost $HOSTNAME
+::1         localhost ip6-localhost ip6-loopback
 EOF
 
 # 2. Network Loopback & DHCP
@@ -42,11 +53,41 @@ auto eth0
 iface eth0 inet dhcp
 EOF
 
-# 3. APK Repositories (main and community for kiosk packages)
+# 3. APK World Package Manifest (instructs Alpine initramfs to install GUI packages)
 mkdir -p "$tmp"/etc/apk
-makefile root:root 0644 "$tmp"/etc/apk/repositories <<EOF
-https://dl-cdn.alpinelinux.org/alpine/v3.20/main
-https://dl-cdn.alpinelinux.org/alpine/v3.20/community
+makefile root:root 0644 "$tmp"/etc/apk/world <<EOF
+alpine-base
+busybox
+busybox-extras
+openrc
+eudev
+udev-init-scripts
+linux-lts
+linux-firmware-none
+chrony
+tzdata
+sudo
+iproute2
+wpa_supplicant
+alsa-utils
+sqlite
+gcompat
+xorg-server
+xf86-video-modesetting
+xf86-video-fbdev
+xf86-input-libinput
+xinit
+dbus
+dbus-x11
+xfce4
+xfwm4-themes
+adw-gtk3
+adwaita-icon-theme
+adwaita-xfce-icon-theme
+font-dejavu
+mesa-dri-gallium
+chromium
+libreoffice
 EOF
 
 # 4. Quiet Boot OpenRC Configuration
@@ -89,14 +130,14 @@ if [ -c /dev/tty1 ]; then
 fi
 EOF
 
-# 7. Inittab for OpenRC and Immediate Kiosk Launch
+# 7. Inittab for OpenRC and Immediate Desktop Launch
 makefile root:root 0644 "$tmp"/etc/inittab <<EOF
 ::sysinit:/usr/local/bin/nidan-boot-banner
 ::sysinit:/sbin/openrc sysinit
 ::sysinit:/sbin/openrc boot
 ::wait:/sbin/openrc default
 
-tty1::respawn:/sbin/getty -n -l /usr/local/bin/nidan-kiosk-session 38400 tty1
+tty1::respawn:/sbin/getty -n -l /usr/local/bin/nidan-desktop-session 38400 tty1
 tty2::respawn:/sbin/getty 38400 tty2
 tty3::respawn:/sbin/getty 38400 tty3
 
@@ -122,7 +163,7 @@ rc_add syslog boot
 
 rc_add networking default
 rc_add chronyd default
-rc_add seatd default
+rc_add dbus default
 rc_add local default
 
 rc_add mount-ro shutdown
@@ -306,10 +347,137 @@ if [ ! -f "$tmp"/var/lib/nidan/www/index.html ]; then
 EOF_HTML
 fi
 
-# 12. Student User Provisioning
+# 12. X11 Wrapper Configuration
+mkdir -p "$tmp"/etc/X11
+makefile root:root 0644 "$tmp"/etc/X11/Xwrapper.config <<EOF
+allowed_users = anybody
+needs_root_rights = yes
+EOF
+
+# Ensure XDG_RUNTIME_DIR is exported for all student sessions
+mkdir -p "$tmp"/etc/profile.d
+makefile root:root 0755 "$tmp"/etc/profile.d/xdg.sh <<'EOF'
+STUDENT_UID=$(id -u 2>/dev/null || echo 1000)
+export XDG_RUNTIME_DIR="/run/user/${STUDENT_UID}"
+mkdir -p "${XDG_RUNTIME_DIR}" 2>/dev/null || true
+chmod 0700 "${XDG_RUNTIME_DIR}" 2>/dev/null || true
+EOF
+
+# 13. Student Desktop Environment & Skel Configuration
+mkdir -p "$tmp"/etc/skel/.config/autostart
+mkdir -p "$tmp"/etc/skel/.config/xfce4/xfconf/xfce-perchannel-xml
+mkdir -p "$tmp"/etc/skel/Desktop
+
+makefile root:root 0755 "$tmp"/etc/skel/.xinitrc <<'EOF'
+#!/bin/sh
+exec dbus-launch --exit-with-session startxfce4
+EOF
+
+# Modern Libadwaita Dark Theme and Icons for XFCE
+makefile root:root 0644 "$tmp"/etc/skel/.config/xfce4/xfconf/xfce-perchannel-xml/xsettings.xml <<'EOF'
+<?xml version="1.0" encoding="UTF-8"?>
+<channel name="xsettings" version="1.0">
+  <property name="Net" type="empty">
+    <property name="ThemeName" type="string" value="adw-gtk3-dark"/>
+    <property name="IconThemeName" type="string" value="Adwaita-Xfce"/>
+  </property>
+  <property name="Xft" type="empty">
+    <property name="DPI" type="empty"/>
+    <property name="Antialias" type="int" value="1"/>
+    <property name="Hinting" type="int" value="1"/>
+    <property name="HintStyle" type="string" value="hintslight"/>
+    <property name="RGBA" type="string" value="rgb"/>
+  </property>
+  <property name="Gtk" type="empty">
+    <property name="FontName" type="string" value="DejaVu Sans 10"/>
+  </property>
+</channel>
+EOF
+
+# Compositing and Modern Window Styling for xfwm4
+makefile root:root 0644 "$tmp"/etc/skel/.config/xfce4/xfconf/xfce-perchannel-xml/xfwm4.xml <<'EOF'
+<?xml version="1.0" encoding="UTF-8"?>
+<channel name="xfwm4" version="1.0">
+  <property name="general" type="empty">
+    <property name="theme" type="string" value="Default-hdpi"/>
+    <property name="title_font" type="string" value="DejaVu Sans Bold 9"/>
+    <property name="use_compositing" type="bool" value="true"/>
+    <property name="show_frame_shadow" type="bool" value="true"/>
+    <property name="show_popup_shadow" type="bool" value="true"/>
+    <property name="borderless_maximize" type="bool" value="true"/>
+  </property>
+</channel>
+EOF
+
+# NIDAN Application Launcher Helper
+mkdir -p "$tmp"/usr/local/bin
+makefile root:root 0755 "$tmp"/usr/local/bin/nidan-launch-app <<'EOF'
+#!/bin/sh
+sleep 1
+
+# If port 8080 is not answering, start local httpd server for static web application
+if ! wget -q -T 1 -O /dev/null http://127.0.0.1:8080/ >/dev/null 2>&1 && ! wget -q -T 1 -O /dev/null http://127.0.0.1:8080/api/status >/dev/null 2>&1; then
+    HTTPD_BIN=""
+    for b in /usr/sbin/httpd /sbin/httpd /usr/bin/httpd /bin/httpd; do
+        if [ -x "$b" ]; then
+            HTTPD_BIN="$b"
+            break
+        fi
+    done
+    if [ -z "$HTTPD_BIN" ] && command -v httpd >/dev/null 2>&1; then
+        HTTPD_BIN="$(command -v httpd)"
+    fi
+    if [ -n "$HTTPD_BIN" ]; then
+        $HTTPD_BIN -p 127.0.0.1:8080 -h /var/lib/nidan/www
+        sleep 1
+    fi
+fi
+
+if wget -q -T 1 -O /dev/null http://127.0.0.1:8080/ >/dev/null 2>&1 || wget -q -T 1 -O /dev/null http://127.0.0.1:8080/api/status >/dev/null 2>&1; then
+    exec chromium --app=http://127.0.0.1:8080 --disable-gpu --disable-software-rasterizer --disable-dev-shm-usage --start-maximized --no-first-run
+else
+    exec chromium --app=file:///var/lib/nidan/www/index.html --allow-file-access-from-files --disable-gpu --disable-software-rasterizer --disable-dev-shm-usage --start-maximized --no-first-run
+fi
+EOF
+
+# NIDAN Desktop Entry
+mkdir -p "$tmp"/usr/share/applications
+makefile root:root 0644 "$tmp"/usr/share/applications/nidan.desktop <<'EOF'
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=NIDAN Learning Platform
+Comment=Adaptive Offline Learning Platform
+Exec=/usr/local/bin/nidan-launch-app
+Icon=accessories-calculator
+Terminal=false
+Categories=Education;Development;
+EOF
+
+# Autostart NIDAN App on Student Login
+makefile root:root 0644 "$tmp"/etc/skel/.config/autostart/nidan.desktop <<'EOF'
+[Desktop Entry]
+Type=Application
+Name=NIDAN Learning Platform
+Exec=/usr/local/bin/nidan-launch-app
+Terminal=false
+Hidden=false
+X-GNOME-Autostart-enabled=true
+EOF
+
+# Desktop Shortcut
+cp "$tmp"/usr/share/applications/nidan.desktop "$tmp"/etc/skel/Desktop/nidan.desktop
+chmod 0755 "$tmp"/etc/skel/Desktop/nidan.desktop
+
+# 14. Student User Provisioning & Lockdown
 mkdir -p "$tmp"/etc/local.d
+mkdir -p "$tmp"/home/student
+chmod 0755 "$tmp"/home
+chmod 0750 "$tmp"/home/student
+
 makefile root:root 0755 "$tmp"/etc/local.d/00-nidan-user.start <<EOF
 #!/bin/sh
+chmod 0755 /
 if ! id student >/dev/null 2>&1; then
     adduser -D -h /home/student -s /bin/sh student
     echo "student:student" | chpasswd
@@ -317,11 +485,52 @@ if ! id student >/dev/null 2>&1; then
     addgroup student video 2>/dev/null || true
     addgroup student input 2>/dev/null || true
     addgroup student seat 2>/dev/null || true
+    addgroup student tty 2>/dev/null || true
+fi
+
+# Ensure Xorg has required setuid rights for non-root desktop session
+chmod u+s /usr/libexec/Xorg.wrap 2>/dev/null || true
+chmod u+s /usr/libexec/Xorg 2>/dev/null || true
+chmod u+s /usr/bin/Xorg 2>/dev/null || true
+
+# Ensure console device permissions for graphical session
+chown student:tty /dev/tty0 /dev/tty1 2>/dev/null || true
+chmod 0660 /dev/tty0 /dev/tty1 2>/dev/null || true
+
+# Copy skeleton configuration into student home if not already present
+if [ ! -f /home/student/.xinitrc ]; then
+    cp -a /etc/skel/. /home/student/ 2>/dev/null || cp -r /etc/skel/. /home/student/
+fi
+
+chown -R student:student /home/student
+chmod 0750 /home/student
+
+# Lock down apk binary to root only (students cannot install/remove packages)
+chmod 0750 /sbin/apk 2>/dev/null || true
+
+# Ensure online repositories are available in /etc/apk/repositories for network updates
+if ! grep -q "dl-cdn.alpinelinux.org" /etc/apk/repositories 2>/dev/null; then
+    echo "https://dl-cdn.alpinelinux.org/alpine/v3.20/main" >> /etc/apk/repositories
+    echo "https://dl-cdn.alpinelinux.org/alpine/v3.20/community" >> /etc/apk/repositories
+fi
+
+# Ensure static web application is served if native service has not claimed port 8080
+if ! wget -q -T 1 -O /dev/null http://127.0.0.1:8080/ >/dev/null 2>&1; then
+    HTTPD_BIN=""
+    for b in /usr/sbin/httpd /sbin/httpd /usr/bin/httpd /bin/httpd; do
+        if [ -x "$b" ]; then
+            HTTPD_BIN="$b"
+            break
+        fi
+    done
+    if [ -n "$HTTPD_BIN" ]; then
+        $HTTPD_BIN -p 0.0.0.0:8080 -h /var/lib/nidan/www
+    fi
 fi
 EOF
 
-# 13. Kiosk Launcher Session
-makefile root:root 0755 "$tmp"/usr/local/bin/nidan-kiosk-session <<'EOF'
+# 15. Session Launcher for TTY1
+makefile root:root 0755 "$tmp"/usr/local/bin/nidan-desktop-session <<'EOF'
 #!/bin/sh
 STUDENT_UID=$(id -u student 2>/dev/null || echo 1000)
 export XDG_RUNTIME_DIR="/run/user/${STUDENT_UID}"
@@ -329,35 +538,15 @@ mkdir -p "${XDG_RUNTIME_DIR}"
 chown student:student "${XDG_RUNTIME_DIR}"
 chmod 0700 "${XDG_RUNTIME_DIR}"
 
-# Check if NidanApp backend is responding on port 8080; default to local offline bundle
-START_URL="file:///var/lib/nidan/www/index.html"
-if nc -z 127.0.0.1 8080 >/dev/null 2>&1; then
-    START_URL="http://127.0.0.1:8080"
-fi
+# Ensure virtual console permissions for student graphical session
+chown student:tty /dev/tty1 /dev/tty0 2>/dev/null || true
+chmod 0660 /dev/tty1 /dev/tty0 2>/dev/null || true
 
-# Launch Wayland cage kiosk running Chromium
-if command -v cage >/dev/null 2>&1 && command -v chromium >/dev/null 2>&1; then
-    exec su -l student -c "
-        export XDG_RUNTIME_DIR=\"/run/user/${STUDENT_UID}\"
-        export WAYLAND_DISPLAY=\"wayland-0\"
-        export LIBSEAT_BACKEND=\"seatd\"
-        export GDK_BACKEND=wayland
-        export QT_QPA_PLATFORM=wayland
-        export MOZ_ENABLE_WAYLAND=1
-
-        exec cage -s -- chromium \
-            --ozone-platform-hint=auto \
-            --kiosk \
-            --no-first-run \
-            --no-sandbox \
-            --disable-infobars \
-            --disable-session-crashed-bubble \
-            --disable-translate \
-            --disable-features=TranslateUI \
-            --disable-pinch \
-            --overscroll-history-navigation=0 \
-            \"${START_URL}\"
-    "
+if command -v startx >/dev/null 2>&1; then
+    su -l student -c "export XDG_RUNTIME_DIR=/run/user/${STUDENT_UID}; export XDG_VTNR=1; exec startx -- vt1 -keeptty"
+    sleep 2
+elif command -v cage >/dev/null 2>&1 && command -v chromium >/dev/null 2>&1; then
+    exec su -l student -c "/usr/local/bin/nidan-launch-app"
 else
     echo "NIDAN Educational Platform is running at http://127.0.0.1:8080"
     sleep 2
@@ -365,5 +554,5 @@ else
 fi
 EOF
 
-# 14. Create final apkovl archive
+# 16. Create final apkovl archive
 tar -c -C "$tmp" -z -f "$HOSTNAME.apkovl.tar.gz" .
