@@ -8,8 +8,18 @@ pidfile="/run/${RC_SVCNAME}.pid"
 output_log="/var/log/nidan.log"
 error_log="/var/log/nidan.err"
 
+export NIDAN_BIND_HOST="0.0.0.0"
+export NIDAN_API_PORT="8080"
+export NIDAN_DB_PATH="/var/lib/nidan/nidan.sqlite"
+export NIDAN_PUBLIC_DIR="/var/lib/nidan/www"
+
 depend() {
     need localmount
     use net
     after firewall
+}
+
+start_pre() {
+    mkdir -p /var/lib/nidan /var/log
+    checkpath -d -m 0755 -o root:root /var/lib/nidan
 }

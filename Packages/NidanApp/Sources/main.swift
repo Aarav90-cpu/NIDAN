@@ -222,7 +222,8 @@ struct NidanApp {
             .deletingLastPathComponent()
             .deletingLastPathComponent()
             .deletingLastPathComponent()
-        let dbPath = projectRoot.appendingPathComponent("nidan.sqlite").path
+        let defaultDbPath = projectRoot.appendingPathComponent("nidan.sqlite").path
+        let dbPath = ProcessInfo.processInfo.environment["NIDAN_DB_PATH"] ?? (FileManager.default.fileExists(atPath: defaultDbPath) ? defaultDbPath : "/var/lib/nidan/nidan.sqlite")
 
         let arguments = Array(CommandLine.arguments.dropFirst())
         if arguments.first == "issue-enrollment-code" {
@@ -273,7 +274,8 @@ struct NidanApp {
         app.http.server.configuration.port = Int(ProcessInfo.processInfo.environment["NIDAN_API_PORT"] ?? "8080") ?? 8080
         
         // Compute the absolute path to Frontend/dist securely
-        let publicDir = projectRoot.appendingPathComponent("Frontend/dist/").path
+        let defaultPublicDir = projectRoot.appendingPathComponent("Frontend/dist/").path
+        let publicDir = ProcessInfo.processInfo.environment["NIDAN_PUBLIC_DIR"] ?? (FileManager.default.fileExists(atPath: defaultPublicDir) ? defaultPublicDir : "/var/lib/nidan/www")
         app.middleware.use(FileMiddleware(publicDirectory: publicDir))
         
         // Initialize Core Data Systems

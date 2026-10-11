@@ -7,7 +7,7 @@ on:
 
 jobs:
   build-app:
-    name: Build NIDAN Swift Application (Static Musl)
+    name: Build NIDAN Swift Application and Frontend
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
@@ -54,11 +54,29 @@ jobs:
               -Xlinker -lmimalloc"
           cp .build/x86_64-swift-linux-musl/release/NidanApp NidanApp-x86_64
 
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Build Web Frontend
+        run: |
+          cd Frontend
+          npm install
+          npm run build
+
       - name: Upload NidanApp artifact
         uses: actions/upload-artifact@v4
         with:
           name: nidan-app-x86_64
           path: NidanApp-x86_64
+          if-no-files-found: error
+
+      - name: Upload Frontend artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: nidan-frontend-dist
+          path: Frontend/dist
           if-no-files-found: error
 
   build-iso:
@@ -76,6 +94,12 @@ jobs:
         with:
           name: nidan-app-x86_64
           path: OS/bin
+
+      - name: Download compiled Frontend
+        uses: actions/download-artifact@v4
+        with:
+          name: nidan-frontend-dist
+          path: OS/www
 
       - name: Prepare executable
         run: |
@@ -107,7 +131,7 @@ jobs:
           tag_name: prerelease-${{ steps.locate_iso.outputs.sha_short }}
           name: NIDAN OS Build (${{ steps.locate_iso.outputs.sha_short }})
           body: |
-            Automated build for NIDAN custom Alpine Linux distribution.
+            Automated build for NIDAN custom Alpine Linux distribution with kiosk UI.
             Compiled natively on x86_64 architecture.
             Commit: ${{ github.sha }}
           draft: false

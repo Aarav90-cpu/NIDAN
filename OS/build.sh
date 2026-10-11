@@ -45,6 +45,13 @@ run_mkimage() {
     if [ -f "${SCRIPT_DIR}/nidan" ]; then
         cp -f "${SCRIPT_DIR}/nidan" "${CACHE_DIR}/aports/scripts/nidan"
     fi
+    if [ -d "${SCRIPT_DIR}/www" ]; then
+        mkdir -p "${CACHE_DIR}/aports/scripts/www"
+        cp -rf "${SCRIPT_DIR}/www/"* "${CACHE_DIR}/aports/scripts/www/" 2>/dev/null || true
+    elif [ -d "${SCRIPT_DIR}/../Frontend/dist" ]; then
+        mkdir -p "${CACHE_DIR}/aports/scripts/www"
+        cp -rf "${SCRIPT_DIR}/../Frontend/dist/"* "${CACHE_DIR}/aports/scripts/www/" 2>/dev/null || true
+    fi
     chmod +x "${CACHE_DIR}/aports/scripts/genapkovl-nidan.sh"
 
     if ! ls "${HOME}/.abuild/"*.rsa >/dev/null 2>&1; then

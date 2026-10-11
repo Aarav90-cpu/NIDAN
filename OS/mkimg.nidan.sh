@@ -6,8 +6,10 @@ profile_nidan() {
     image_ext="iso"
     arch="x86_64"
     output_format="iso"
-    kernel_cmdline="modules=loop,squashfs,sd-mod,usb-storage quiet console=tty1"
+    kernel_cmdline="modules=loop,squashfs,sd-mod,usb-storage quiet loglevel=0 console=tty1 vt.global_cursor_default=0"
     syslinux_serial=""
+    syslinux_timeout=1
+    syslinux_prompt=0
     hostname="nidan"
     modloop_sign=no
     apkovl="genapkovl-nidan.sh"
@@ -16,6 +18,7 @@ profile_nidan() {
         busybox
         openrc
         eudev
+        udev-init-scripts
         linux-lts
         linux-firmware-none
         chrony
@@ -25,5 +28,11 @@ profile_nidan() {
         wpa_supplicant
         alsa-utils
         sqlite
+        cage
+        seatd
+        seatd-openrc
+        chromium
+        mesa-dri-gallium
+        font-dejavu
     "
 }
