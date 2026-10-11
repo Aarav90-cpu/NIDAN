@@ -12,14 +12,23 @@ run_mkimage() {
     git config --global --add safe.directory '*' 2>/dev/null || true
 
     ALPINE_BRANCH="3.20-stable"
-    if [ ! -d "${CACHE_DIR}/aports/.git" ]; then
-        echo "Cloning Alpine aports repository (${ALPINE_BRANCH})..."
+    PRIMARY_APORTS_URL="https://github.com/alpinelinux/aports.git"
+    FALLBACK_APORTS_URL="https://gitlab.alpinelinux.org/alpine/aports.git"
+
+    clone_aports() {
         rm -rf "${CACHE_DIR}/aports"
-        git clone --depth 1 --branch "${ALPINE_BRANCH}" https://gitlab.alpinelinux.org/alpine/aports.git "${CACHE_DIR}/aports"
+        echo "Cloning Alpine aports repository (${ALPINE_BRANCH}) from ${PRIMARY_APORTS_URL}..."
+        if ! git clone --depth 1 --branch "${ALPINE_BRANCH}" "${PRIMARY_APORTS_URL}" "${CACHE_DIR}/aports"; then
+            echo "Primary mirror failed; attempting fallback to ${FALLBACK_APORTS_URL}..."
+            git clone --depth 1 --branch "${ALPINE_BRANCH}" "${FALLBACK_APORTS_URL}" "${CACHE_DIR}/aports"
+        fi
+    }
+
+    if [ ! -d "${CACHE_DIR}/aports/.git" ]; then
+        clone_aports
     elif [ "$(git -C "${CACHE_DIR}/aports" rev-parse --abbrev-ref HEAD 2>/dev/null)" != "${ALPINE_BRANCH}" ]; then
         echo "Switching aports repository to ${ALPINE_BRANCH}..."
-        rm -rf "${CACHE_DIR}/aports"
-        git clone --depth 1 --branch "${ALPINE_BRANCH}" https://gitlab.alpinelinux.org/alpine/aports.git "${CACHE_DIR}/aports"
+        clone_aports
     else
         echo "Using cached aports repository (${ALPINE_BRANCH})..."
     fi
