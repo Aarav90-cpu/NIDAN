@@ -16,6 +16,7 @@ OS/output/
 OS/chroot/
 OS/binary/
 OS/local/
+OS/bin/
 OS/.build/
 OS/*.iso
 OS/*.files

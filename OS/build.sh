@@ -77,6 +77,27 @@ if [ -f "/etc/alpine-release" ]; then
     run_mkimage
 else
     echo "Host is not Alpine Linux. Delegating build to containerized Alpine builder..."
+
+    # Pre-stage built frontend assets so they are mounted into the container workspace
+    if [ -d "${SCRIPT_DIR}/../Frontend/dist" ]; then
+        echo "Staging Frontend/dist assets into ${SCRIPT_DIR}/www..."
+        mkdir -p "${SCRIPT_DIR}/www"
+        cp -rf "${SCRIPT_DIR}/../Frontend/dist/"* "${SCRIPT_DIR}/www/"
+    fi
+
+    # Pre-stage compiled backend binary if available
+    if [ -f "${SCRIPT_DIR}/../.build/out/Products/Debug-linux-x86_64/NidanApp" ] && [ ! -f "${SCRIPT_DIR}/bin/nidan" ]; then
+        echo "Staging backend binary into ${SCRIPT_DIR}/bin/nidan..."
+        mkdir -p "${SCRIPT_DIR}/bin"
+        cp -f "${SCRIPT_DIR}/../.build/out/Products/Debug-linux-x86_64/NidanApp" "${SCRIPT_DIR}/bin/nidan"
+        chmod +x "${SCRIPT_DIR}/bin/nidan"
+    elif [ -f "${SCRIPT_DIR}/../.build/release/NidanApp" ] && [ ! -f "${SCRIPT_DIR}/bin/nidan" ]; then
+        echo "Staging backend binary into ${SCRIPT_DIR}/bin/nidan..."
+        mkdir -p "${SCRIPT_DIR}/bin"
+        cp -f "${SCRIPT_DIR}/../.build/release/NidanApp" "${SCRIPT_DIR}/bin/nidan"
+        chmod +x "${SCRIPT_DIR}/bin/nidan"
+    fi
+
     docker build -t nidan-alpine-builder "${SCRIPT_DIR}"
     docker run --privileged --rm \
         -v "${SCRIPT_DIR}:/workspace" \

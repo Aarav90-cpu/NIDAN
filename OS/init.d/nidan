@@ -20,6 +20,23 @@ depend() {
 }
 
 start_pre() {
+    if [ ! -x "/usr/local/bin/nidan" ]; then
+        return 0
+    fi
     mkdir -p /var/lib/nidan /var/log
     checkpath -d -m 0755 -o root:root /var/lib/nidan
+}
+
+start() {
+    if [ ! -x "/usr/local/bin/nidan" ]; then
+        return 0
+    fi
+    default_start
+}
+
+stop() {
+    if [ ! -x "/usr/local/bin/nidan" ]; then
+        return 0
+    fi
+    default_stop
 }

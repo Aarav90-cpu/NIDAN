@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Welcome to NIDAN</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Symbols+Outlined" rel="stylesheet">
+    <style>body{background-color:var(--background);justify-content:center;align-items:center;min-height:100vh;margin:0;display:flex}.onboarding-card{background:var(--surface);text-align:center;border-radius:24px;width:100%;max-width:500px;padding:2.5rem;box-shadow:0 10px 30px #0000001a}.logo{color:var(--primary);margin-bottom:1rem;font-size:3rem}h1{color:var(--text-primary);margin:0 0 .5rem;font-size:2rem}p.subtitle{color:var(--text-secondary);margin-bottom:2rem}.role-selector{flex-wrap:wrap;gap:1rem;margin-bottom:2rem;display:flex}.role-card{border:2px solid var(--card-border);cursor:pointer;border-radius:16px;flex-direction:column;flex:calc(50% - 1rem);align-items:center;gap:.5rem;padding:1.5rem;transition:all .2s;display:flex}.role-card:hover{border-color:var(--primary);background:#2e7d320d}.role-card.selected{border-color:var(--primary);background:#2e7d321a}.role-card md-icon{color:var(--primary);font-size:2.5rem}.form-group{text-align:left;flex-direction:column;gap:.5rem;margin-bottom:1rem;display:flex}.form-group label{color:var(--text-primary);font-size:.9rem;font-weight:500}.form-group input,.form-group select{border:1px solid var(--card-border);border-radius:8px;outline:none;padding:.75rem 1rem;font-family:inherit;font-size:1rem}.form-group input:focus,.form-group select:focus{border-color:var(--primary)}.form-section{animation:.3s fadeUp;display:none}.form-section.active{display:block}.submit-btn{--md-filled-button-container-color:var(--primary);width:100%;margin-top:1.5rem}</style>
+    <script type="module" crossorigin src="/assets/onboarding-Byd5X4kE.js"></script>
+    <link rel="modulepreload" crossorigin href="/assets/icon-BclkLKie.js">
+    <link rel="modulepreload" crossorigin href="/assets/elevation-CycicDXQ.js">
+    <link rel="modulepreload" crossorigin href="/assets/query-assigned-elements-q5zgKHUi.js">
+    <link rel="modulepreload" crossorigin href="/assets/shared-styles.cssresult-BhpumRP2.js">
+    <link rel="modulepreload" crossorigin href="/assets/filled-button-CdBnqKPw.js">
+    <link rel="stylesheet" crossorigin href="/assets/icon-06tX8z_E.css">
+  </head>
+  <body class="light-theme">
+    
+    <div class="onboarding-card">
+      <md-icon class="logo">school</md-icon>
+      <h1>Welcome to NIDAN</h1>
+      <p class="subtitle">Please configure this device.</p>
+      
+      <div id="step-1">
+        <h3 style="text-align: left; margin-bottom: 1rem;">I am a...</h3>
+        <div class="role-selector">
+          <div class="role-card" onclick="selectRole('student')" id="role-student">
+            <md-icon>face</md-icon>
+            <strong>Student</strong>
+          </div>
+          <div class="role-card" onclick="selectRole('teacher')" id="role-teacher">
+            <md-icon>history_edu</md-icon>
+            <strong>Teacher</strong>
+          </div>
+          <div class="role-card" onclick="selectRole('vicePrincipal')" id="role-vicePrincipal">
+            <md-icon>supervisor_account</md-icon>
+            <strong>Vice-principal</strong>
+          </div>
+          <div class="role-card" onclick="selectRole('principal')" id="role-principal">
+            <md-icon>account_balance</md-icon>
+            <strong>Principal</strong>
+          </div>
+        </div>
+      </div>
+
+      <div id="step-2" class="form-section">
+        <!-- Forms injected by JS -->
+      </div>
+      
+      <md-filled-button class="submit-btn" id="next-btn" disabled>Continue</md-filled-button>
+    </div>
+
+  </body>
+</html>

@@ -350,3 +350,45 @@ To start a new demonstration instance pre-populated with synthetic student recor
    ```
 
 5. Access `http://localhost:8080/onboarding.html`, enter the enrollment code, and set up your student credentials.
+
+---
+
+## Operating System & Virtual Machine Commands
+
+### Building the Alpine Linux Image
+
+Build the custom Alpine Linux ISO image:
+```bash
+cd OS && ./build.sh
+```
+
+The script automatically executes inside the containerized Alpine build environment on non-Alpine hosts and generates the final bootable ISO in `OS/output/alpine-nidan-<date>-x86_64.iso`.
+
+### Testing the ISO with QEMU
+
+Test the generated ISO in a virtual machine with hardware acceleration and port forwarding:
+```bash
+qemu-system-x86_64 \
+  -enable-kvm \
+  -cpu host \
+  -m 2G \
+  -smp 2 \
+  -vga virtio \
+  -cdrom OS/output/alpine-nidan-261011-x86_64.iso \
+  -boot d \
+  -net nic -net user,hostfwd=tcp::8080-:8080
+```
+
+#### Command Options
+- `-enable-kvm -cpu host`: Enables native hardware acceleration (omit if KVM is not supported on your host).
+- `-m 2G`: Allocates 2 GB of RAM (required for live memory filesystem and Chromium).
+- `-smp 2`: Allocates 2 CPU cores.
+- `-vga virtio`: Provides a VirtIO DRM/KMS graphics device for the Wayland kiosk compositor (`cage`).
+- `-cdrom OS/output/alpine-nidan-261011-x86_64.iso`: Specifies the ISO image to boot.
+- `-net user,hostfwd=tcp::8080-:8080`: Forwards port 8080 to the host machine for network testing at `http://localhost:8080`.
+
+#### Key Navigation in QEMU
+- **TTY1 (Graphical Kiosk):** Displays the white `N I D A N` boot banner and launches the full-screen kiosk interface.
+- **TTY2 / TTY3 (Emergency Console):** Press `Ctrl+Alt+F2` or `Ctrl+Alt+F3` (or use QEMU window menu `View -> View TTY2`) to access an emergency text terminal for maintenance.
+- **Host Browser:** Open `http://localhost:8080` on your host machine while the VM runs to test teacher and administrative dashboard access across the virtual network.
+

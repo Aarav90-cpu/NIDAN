@@ -28,6 +28,7 @@ profile_nidan() {
         wpa_supplicant
         alsa-utils
         sqlite
+        gcompat
         cage
         seatd
         seatd-openrc

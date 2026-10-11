@@ -66,6 +66,31 @@ The build script will automatically package the binary into `/usr/local/bin/nida
 
 ---
 
+## Testing in QEMU
+
+To test the generated ISO in a virtual machine using QEMU:
+
+```bash
+qemu-system-x86_64 \
+  -enable-kvm \
+  -cpu host \
+  -m 2G \
+  -smp 2 \
+  -vga virtio \
+  -cdrom OS/output/alpine-nidan-261011-x86_64.iso \
+  -boot d \
+  -net nic -net user,hostfwd=tcp::8080-:8080
+```
+
+### VM Interaction Notes
+- **Hardware Acceleration:** `-enable-kvm -cpu host` provides native CPU performance. Omit these flags if KVM is not supported on your host.
+- **Display Driver:** `-vga virtio` provides the VirtIO DRM/KMS graphics device required by the Wayland kiosk compositor (`cage`).
+- **RAM Allocation:** `-m 2G` ensures sufficient RAM for the in-memory root filesystem and the Chromium browser.
+- **Port Forwarding:** `hostfwd=tcp::8080-:8080` allows accessing the running `NidanApp` web interface from your host browser at `http://localhost:8080`.
+- **Virtual Terminals:** The graphical kiosk runs on `tty1`. Emergency text consoles are accessible via `Ctrl+Alt+F2` or `Ctrl+Alt+F3`.
+
+---
+
 ## Customization
 
 - **Package Selection:** Edit `OS/mkimg.nidan.sh` to add or remove packages from the `apks` list.
