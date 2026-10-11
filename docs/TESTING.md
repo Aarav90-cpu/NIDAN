@@ -12,10 +12,9 @@ Given NIDAN's focus on offline-first reliability and correct adaptive progressio
 - SQLite queries and schema migrations must be tested against a real, in-memory SQLite database.
 - The Sync Engine must be tested against a mocked Vapor backend to simulate network drops, 500 errors, and conflict resolution scenarios.
 
-## 3. UI Testing (SwiftCrossUI)
-- `NidanUI` is tested independently of the core.
-- Because `SwiftCrossUI` is experimental, we prioritize Snapshot testing and view-model validation over deep, framework-specific UI automation.
+## 3. UI Testing (Web Interface)
+- The web frontend (`Frontend/`) is decoupled from `NidanCore` and verified via static TypeScript typechecking (`tsc`), build bundling (`vite build`), and browser integration verification against local API endpoints.
 
 ## CI/CD
 - SwiftPM `swift test` must run and pass on all Pull Requests.
-- The `OS/build` script must successfully generate the Debian ISO on a nightly basis to ensure OS dependencies haven't broken the build.
+- The OS image build pipeline must successfully generate the Alpine Linux ISO to ensure OS packaging dependencies haven't broken the build.

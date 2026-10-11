@@ -4,8 +4,8 @@
 The T1 is the long-term goal for the student's personal learning device. 
 - **Target Cost:** ~₹1,000 lifetime cost.
 - **Hardware:** Extremely low-end, highly repairable, modular components (likely ARM or low-power x86).
-- **OS:** Custom NIDAN OS (derived from Debian). It boots directly into the NIDAN session. There is no standard desktop environment to distract the student.
-- **Capabilities:** Runs `NidanCore`, `SwiftCrossUI`, and a local `SQLite` database.
+- **OS:** Custom NIDAN OS (derived from Alpine Linux). It boots directly into the NIDAN session. There is no standard desktop environment to distract the student.
+- **Capabilities:** Runs `NidanCore`, a browser-based local Web UI, and a local `SQLite` database.
 
 ## T2: The Classroom Hub
 The T2 is the local classroom server.

@@ -1,7 +1,7 @@
 # ADR 001: Debian over Arch
 
 ## Status
-Accepted
+Superseded by [ADR 009](009-switch-to-alpine-linux.md)
 
 ## Context
 NIDAN requires a reliable, secure, and long-term supported Linux foundation to build its custom operating system image (for T1 and T2 devices). We considered rolling release distributions like Arch Linux, but they introduce instability and frequent breaking changes that are unsuitable for resource-constrained, remote classroom environments.

@@ -3,9 +3,9 @@
 The NIDAN architecture strictly separates domain logic from presentation and enforces an offline-first execution model.
 
 ## Core Rule
-**SwiftCrossUI may own the UI. It must never own NIDAN's business logic.**
+**The presentation layer may own the UI. It must never own NIDAN's business logic.**
 
-Business logic (`NidanCore`) must remain completely independent of the UI framework. If SwiftCrossUI changes or is replaced, only the UI adapter is updated, not the entire application.
+Business logic (`NidanCore`) must remain completely independent of the UI framework. When NIDAN transitioned from experimental SwiftCrossUI to the browser-based web frontend ([ADR 010](adr/010-switch-to-web-frontend.md)), only the presentation layer was replaced, leaving `NidanCore` completely untouched.
 
 ## High-Level Flow
 ```
@@ -26,7 +26,7 @@ NidanContentServer (separate Vapor process)
 The school API is authoritative for identity, class membership, assignments, marks, notices, chapter coverage, and doubts. The content process does not open the school database and does not grant access to school records. Both processes bind to loopback unless an operator explicitly configures a classroom-network bind address.
 
 ## Module Dependencies
-The Swift Packages are organized with strict dependency boundaries:
+The Swift Packages and presentation layer are organized with strict dependency boundaries:
 
 ```
 NidanCore
@@ -35,9 +35,9 @@ NidanStorage
 NidanNetworking
 NidanSync
    ↑
-NidanUI
+NidanApp (Vapor API & Static Host)
    ↑
-Student App / Teacher App
+Web Interface (HTML / TypeScript / Material Web)
 ```
 
 ## Offline Data Flow

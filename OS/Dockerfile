@@ -1,16 +1,31 @@
-# ~/NIDAN/OS/Dockerfile
-FROM debian:stable
+FROM alpine:3.20
 
-# Install live-build system dependencies once and for all
-RUN apt-get update && apt-get install -y \
-    live-build \
+# Install dependencies required for Alpine ISO generation and package compilation
+RUN apk update && apk add --no-cache \
+    alpine-sdk \
+    alpine-conf \
+    fakeroot \
+    mkinitfs \
+    grub \
+    grub-efi \
     xorriso \
+    syslinux \
+    mtools \
     squashfs-tools \
-    nano \
-    sudo \
-    && rm -rf /var/lib/apt/lists/*
+    dosfstools \
+    bash \
+    git \
+    openrc \
+    coreutils \
+    tzdata \
+    sudo
+
+# Configure build environment and permissions
+RUN addgroup -S abuild 2>/dev/null || true && \
+    adduser -D -G abuild builder && \
+    echo "builder ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers && \
+    git config --global --add safe.directory '*'
 
 WORKDIR /workspace
 
-# Keep the entrypoint interactive or open for execution overrides
 CMD ["/bin/bash"]

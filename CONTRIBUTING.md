@@ -89,7 +89,7 @@ Avoid meaningless commit messages.
 
 ## Code Guidelines
 
-NIDAN uses Swift, SwiftCrossUI, Vapor, SQLite, PostgreSQL, and Bash.
+NIDAN uses Swift, TypeScript/HTML (Material Web), Vapor, SQLite, PostgreSQL, and Bash.
 
 Keep code:
 - Readable
@@ -113,7 +113,7 @@ Domain/Core
 Infrastructure
 ```
 
-**Critical:** NidanCore must NOT depend on SwiftCrossUI or any UI framework.
+**Critical:** NidanCore must NOT depend on any UI framework or presentation library.
 
 Do NOT put:
 - Database logic in views

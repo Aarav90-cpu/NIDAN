@@ -1,5 +1,0 @@
-#!/bin/bash
-echo "Starting NIDAN Update Service (stub)..."
-while true; do
-  sleep 3600
-done

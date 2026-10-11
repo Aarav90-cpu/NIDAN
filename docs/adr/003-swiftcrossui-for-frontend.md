@@ -1,7 +1,7 @@
 # ADR 003: SwiftCrossUI for Frontend
 
 ## Status
-Accepted
+Superseded by [ADR 010](010-switch-to-web-frontend.md)
 
 ## Context
 Since we are using Swift as our primary language, we need a way to build a graphical user interface on Linux (and potentially other desktop platforms). We want a declarative, SwiftUI-like syntax to accelerate UI development.

@@ -2,9 +2,9 @@
 
 ## V1 Scope (Software Foundation)
 The primary objective of V1 is to build a convincing, measurable education prototype that establishes a working offline-first learning loop.
-- **Platform:** x86_64 Debian-based Linux environment.
+- **Platform:** x86_64 Alpine Linux environment (musl-based).
 - **Core Loop:** Assess → Identify Level → Assign → Practice → Measure → Adapt.
-- **Stack:** Swift (Core & Backend), SwiftCrossUI (Frontend), SQLite (Local Storage).
+- **Stack:** Swift (Core & Backend), Web Interface (HTML, TypeScript, Material Design 3), SQLite (Local Storage).
 - **Features:**
   - Diagnostic assessments.
   - Level-based learning paths.

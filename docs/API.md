@@ -1,6 +1,6 @@
 # Prototype API
 
-This document describes the current local prototype API. It is not a production deployment contract.
+This document describes the current local prototype API. It is not a production deployment contract. For the complete command-line and environment variable reference, see [COMMANDS.md](COMMANDS.md).
 
 ## Processes
 

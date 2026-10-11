@@ -9,8 +9,10 @@
 Packages/**/.build/
 Packages/**/.swiftpm/
 
-# Live Build OS Artifacts
+# Alpine & Live Build OS Artifacts
 OS/cache/
+OS/.cache/
+OS/output/
 OS/chroot/
 OS/binary/
 OS/local/

@@ -33,7 +33,7 @@ NidanCore
        ↓
 Application Layer
        ↓
-SwiftCrossUI (Presentation)
+Web Interface (Presentation: HTML, TypeScript, Material Web)
        ↓
 SQLite (Local) + PostgreSQL (Server)
 ```
@@ -45,11 +45,11 @@ SQLite (Local) + PostgreSQL (Server)
 ## Technology Choices
 
 - **Language:** Swift (primary)
-- **Frontend:** SwiftCrossUI (cross-platform UI)
+- **Frontend:** Web Interface (HTML5, TypeScript, Material Design 3 Web components)
 - **Backend:** Swift + Vapor
 - **Local Storage:** SQLite
 - **Server Database:** PostgreSQL
-- **OS:** Debian-based Linux
+- **OS:** Alpine Linux (musl-based)
 - **Build:** Swift Package Manager
 - **System Scripts:** Bash
 
@@ -70,7 +70,7 @@ These are locked unless explicitly changed.
 ```
 NIDAN/
 ├── docs/              (Architecture, product, education, security)
-├── OS/                (Linux base, Debian customization)
+├── OS/                (Linux base, Alpine customization)
 ├── Packages/          (Swift packages for core)
 ├── Apps/              (Student and teacher applications)
 ├── Server/            (Backend services)

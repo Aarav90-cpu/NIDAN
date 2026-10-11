@@ -10,5 +10,5 @@ We chose SwiftCrossUI for our frontend (ADR-003). However, it is explicitly a wo
 `NidanCore` (and all business logic modules) must have absolutely zero dependencies on `SwiftCrossUI` or any other presentation framework. The UI must remain a thin adapter layer on top of `NidanCore`.
 
 ## Consequences
-- **Positive:** We insulate the most valuable part of the system (the learning logic, data models, and sync engine) from the most volatile part (the UI framework). If SwiftCrossUI fails, we only replace the presentation layer.
+- **Positive:** We insulate the most valuable part of the system (the learning logic, data models, and sync engine) from the most volatile part (the UI framework). When SwiftCrossUI was replaced with a web frontend ([ADR 010](010-switch-to-web-frontend.md)), only the presentation layer was updated, leaving `NidanCore` completely intact.
 - **Negative:** Requires strict discipline. Developers cannot take shortcuts by putting database queries or learning algorithms directly inside view declarations. It may require writing boilerplate adapters/view-models.

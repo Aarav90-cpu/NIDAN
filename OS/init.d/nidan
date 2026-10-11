@@ -1,0 +1,15 @@
+#!/sbin/openrc-run
+
+name="nidan"
+description="NIDAN Educational Platform Service"
+command="/usr/local/bin/nidan"
+command_background="true"
+pidfile="/run/${RC_SVCNAME}.pid"
+output_log="/var/log/nidan.log"
+error_log="/var/log/nidan.err"
+
+depend() {
+    need localmount
+    use net
+    after firewall
+}

@@ -63,20 +63,63 @@ Student Device → Local Database → NIDAN Core → Student Interface
 ## Technology Stack
 
 | Layer | Technology |
-|-------|-----------|
-| Language | Swift |
-| UI | SwiftCrossUI |
+|---|---|
+| Language | Swift, TypeScript |
+| UI | Web Interface (Material Design 3 Web components) |
 | Backend | Swift + Vapor |
 | Local Storage | SQLite |
-| Server Database | PostgreSQL |
-| OS | Debian-based Linux |
-| Build System | Swift Package Manager |
+| Server Database | PostgreSQL (Planned) |
+| OS | Alpine Linux (musl-based) |
+| Build System | Swift Package Manager, npm |
 
 Architecture separates domain logic from presentation:
 
 ```
-NIDAN Core → Application Layer → SwiftCrossUI → Platform
+NIDAN Core → Application Layer → Presentation Layer → Platform
 ```
+
+---
+
+## Building and Running
+
+### Prerequisites
+
+- Swift 6.0 or higher
+- Node.js 18 or higher and npm
+
+### Quickstart
+
+1. Build frontend assets:
+   ```bash
+   cd Frontend
+   npm install
+   npm run build
+   cd ..
+   ```
+
+2. Compile the Swift packages:
+   ```bash
+   swift build
+   ```
+
+3. Run automated tests:
+   ```bash
+   swift test
+   ```
+
+4. Launch the application server:
+   ```bash
+   swift run NidanApp
+   ```
+
+5. In a separate terminal, issue a one-time enrollment code to register:
+   ```bash
+   swift run NidanApp issue-enrollment-code student --classes 9A
+   ```
+
+6. Open `http://localhost:8080/onboarding.html` in your browser.
+
+For complete command-line arguments, environment variables, content server execution, and OS image build commands, see the [Command Reference](docs/COMMANDS.md).
 
 ---
 
@@ -110,7 +153,7 @@ These are future engineering goals.
 ## Development Phases
 
 **Phase 1:** Documentation and architecture
-**Phase 2:** Linux base (Debian)
+**Phase 2:** Linux base (Alpine Linux)
 **Phase 3:** NIDAN core and application
 **Phase 4:** Full frontend (student and teacher)
 **Phase 5:** Backend services

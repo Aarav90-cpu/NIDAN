@@ -6,60 +6,34 @@ on:
       - main
 
 jobs:
-  build-and-release:
-    # Running on an ARM runner machine
-    runs-on: ubuntu-24.04-arm
-    permissions:
-      contents: write
-
+  build-app:
+    name: Build NIDAN Swift Application (Static Musl)
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      # Sets up QEMU multi-architecture emulation on the host kernel
-      - name: Set up QEMU
-        uses: docker/setup-qemu-action@v3
-        with:
-          platforms: amd64
-
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
-
-      - name: Generate build tag
-        id: vars
-        run: echo "sha_short=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
-
-      - name: Cache live-build OS cache
-        uses: actions/cache@v4
-        with:
-          path: OS/cache
-          key: ${{ runner.os }}-live-build-${{ hashFiles('OS/config/package-lists/**') }}
-          restore-keys: |
-            ${{ runner.os }}-live-build-
-
-      - name: Cache Swift and Mimalloc
+      - name: Cache Swift and Dependencies
         uses: actions/cache@v4
         with:
           path: |
             .build
             mimalloc
             sqlite
-          key: ${{ runner.os }}-swift-mimalloc-v2-${{ hashFiles('Package.resolved') }}
+          key: ${{ runner.os }}-swift-mimalloc-v3-${{ hashFiles('Package.resolved') }}
           restore-keys: |
-            ${{ runner.os }}-swift-mimalloc-v2-
+            ${{ runner.os }}-swift-mimalloc-v3-
 
       - name: Build NIDAN Swift App
         run: |
-          echo "Compiling NidanApp for x86_64 with Musl and Mimalloc..."
-          docker run --rm --platform linux/amd64 -v "$(pwd)":/workspace -w /workspace swift:6.0.1 bash -c "\
+          echo "Compiling NidanApp natively for x86_64 with Musl and Mimalloc..."
+          docker run --rm -v "$(pwd)":/workspace -w /workspace swift:6.0.1 bash -c "\
             apt-get update && apt-get install -y musl-tools cmake git curl unzip && \
             if [ ! -d 'mimalloc/build' ]; then \
               git clone --depth 1 https://github.com/microsoft/mimalloc.git && \
               cd mimalloc && mkdir build && cd build && \
               CC=musl-gcc cmake .. -DMI_BUILD_SHARED=OFF -DMI_BUILD_STATIC=ON && \
               make && cd ../..; \
-            else \
-              echo 'Mimalloc already built, skipping...'; \
             fi && \
             if [ ! -d 'sqlite/build' ]; then \
               mkdir -p sqlite/build && cd sqlite/build && \
@@ -68,8 +42,6 @@ jobs:
               cd sqlite-amalgamation-3450300 && \
               musl-gcc -O3 -DSQLITE_ENABLE_SNAPSHOT=1 -DSQLITE_ENABLE_FTS5=1 -DSQLITE_ENABLE_PREUPDATE_HOOK=1 -DSQLITE_ENABLE_SESSION=1 -DSQLITE_ENABLE_RTREE=1 -DSQLITE_ENABLE_MATH_FUNCTIONS=1 -c sqlite3.c && \
               ar rcs libsqlite3.a sqlite3.o && cd ../../..; \
-            else \
-              echo 'SQLite already built, skipping...'; \
             fi && \
             curl -LO https://download.swift.org/swift-6.0.1-release/static-sdk/swift-6.0.1-RELEASE/swift-6.0.1-RELEASE_static-linux-0.0.1.artifactbundle.tar.gz && \
             swift sdk install swift-6.0.1-RELEASE_static-linux-0.0.1.artifactbundle.tar.gz && \
@@ -81,66 +53,65 @@ jobs:
               -Xlinker -L\$(pwd)/mimalloc/build \
               -Xlinker -lmimalloc"
           cp .build/x86_64-swift-linux-musl/release/NidanApp NidanApp-x86_64
-          # Move into the live-build chroot includes so it becomes part of the OS
-          mkdir -p OS/config/includes.chroot/usr/local/bin
-          cp NidanApp-x86_64 OS/config/includes.chroot/usr/local/bin/nidan
-          chmod +x OS/config/includes.chroot/usr/local/bin/nidan
 
-      - name: Build NIDAN Engine and Compile ISO
+      - name: Upload NidanApp artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: nidan-app-x86_64
+          path: NidanApp-x86_64
+          if-no-files-found: error
+
+  build-iso:
+    name: Build NIDAN Alpine Linux ISO
+    needs: build-app
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Download compiled NidanApp
+        uses: actions/download-artifact@v4
+        with:
+          name: nidan-app-x86_64
+          path: OS/bin
+
+      - name: Prepare executable
         run: |
-          cd OS/
-          export DOCKER_BUILDKIT=1
-          
-          echo "Step 1: Building/Verifying the NIDAN Build Engine for x86_64..."
-          # Build the Docker build environment targeting x86_64 explicitly
-          docker build --platform linux/amd64 -t nidan-builder .
-          
-          echo "Step 2: Purging old runtime artifacts..."
-          docker run --privileged --rm --platform linux/amd64 -v "$(pwd)":/workspace nidan-builder lb clean --purge
-          
-          echo "Step 3: Initializing live-build layout targeting 64-bit..."
-          # --architectures amd64 tells live-build to configure an x86_64 OS
-          docker run --privileged --rm --platform linux/amd64 -v "$(pwd)":/workspace nidan-builder lb config \
-            --architectures amd64 \
-            --image-name nidan-x86_64 \
-            --bootappend-live "boot=live components quiet splash loglevel=0 fastboot noautologin console=tty1"
-          
-          echo "Step 4: Compiling your NIDAN custom ISO via emulation..."
-          docker run --privileged --rm --platform linux/amd64 -v "$(pwd)":/workspace nidan-builder lb build
-          
-          echo "Success! Your custom NIDAN distribution ISO is ready."
+          mv OS/bin/NidanApp-x86_64 OS/bin/nidan
+          chmod +x OS/bin/nidan
 
-      - name: Locate and Rename ISO file
+      - name: Build Alpine ISO
+        run: |
+          cd OS
+          ./build.sh
+
+      - name: Locate ISO file
         id: locate_iso
         run: |
-          cd OS/
-          GEN_ISO=$(ls *.iso | head -n 1)
-          if [ -z "$GEN_ISO" ]; then
-            echo "Error: No ISO file found after build!"
+          ISO_PATH=$(ls OS/output/*.iso | head -n 1)
+          if [ -z "$ISO_PATH" ]; then
+            echo "Error: No ISO file found in OS/output!"
             exit 1
           fi
-          
-          FINAL_ISO="nidan-os-${{ steps.vars.outputs.sha_short }}-x86_64.iso"
-          mv "$GEN_ISO" "$FINAL_ISO"
-          
-          echo "Standardized ISO Name: $FINAL_ISO"
-          echo "iso_file=OS/$FINAL_ISO" >> $GITHUB_OUTPUT
+          SHA_SHORT=$(git rev-parse --short HEAD)
+          FINAL_ISO="nidan-os-${SHA_SHORT}-x86_64.iso"
+          cp "$ISO_PATH" "OS/output/$FINAL_ISO"
+          echo "iso_file=OS/output/$FINAL_ISO" >> $GITHUB_OUTPUT
+          echo "sha_short=$SHA_SHORT" >> $GITHUB_OUTPUT
 
-      - name: Create GitHub Pre-Release
+      - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: prerelease-${{ steps.vars.outputs.sha_short }}
-          name: NIDAN OS Build (${{ steps.vars.outputs.sha_short }})
+          tag_name: prerelease-${{ steps.locate_iso.outputs.sha_short }}
+          name: NIDAN OS Build (${{ steps.locate_iso.outputs.sha_short }})
           body: |
-            Automated pre-release build for NIDAN custom x86_64 distribution.
-            Built on ARM64 infrastructure using emulation.
-            Built from commit: ${{ github.sha }}
+            Automated build for NIDAN custom Alpine Linux distribution.
+            Compiled natively on x86_64 architecture.
+            Commit: ${{ github.sha }}
           draft: false
           prerelease: true
           files: |
             ${{ steps.locate_iso.outputs.iso_file }}
-            NidanApp-x86_64
-
-      - name: Fix permissions for Cache
-        if: always()
-        run: sudo chown -R $USER:$USER OS/cache .build mimalloc sqlite || true
+            OS/bin/nidan
